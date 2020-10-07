@@ -1,0 +1,6 @@
+total 8
+drwxr-xr-x. 2 mpdonkic mpdonkic 67 Ruj 30 21:43 .
+drwxr-xr-x. 3 mpdonkic mpdonkic 22 Ruj 30 21:25 ..
+-rw-r--r--. 1 mpdonkic mpdonkic  0 Ruj 30 21:43 output_3.txt
+-rw-r--r--. 1 mpdonkic mpdonkic 36 Ruj 30 21:30 Zadatak_2.txt
+-rw-r--r--. 1 mpdonkic mpdonkic 35 Ruj 30 21:43 Zadatak_3.sh
