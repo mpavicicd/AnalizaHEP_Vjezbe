@@ -6,6 +6,6 @@ class ElementaryParticle {
 		float masacestice;
 		string imecestice;
 		bool ifbozon;
-		ElementaryParticle(float m, string name, bool isboson);
+		ElementaryParticle(float masacestice, string imecestice, bool ifbozon);
 		void printInfo();
 };
