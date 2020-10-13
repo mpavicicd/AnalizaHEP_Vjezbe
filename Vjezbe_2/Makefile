@@ -1,11 +1,11 @@
 CC=g++
 CFLAGS=-I.
 DEPS = ElementaryParticle.h
+OBJ = analyzer.o ElementaryParticle.o 
 
-%.o: %.cpp $(DEPS)
-	$(CC) -cpp -o $@ $< $(CFLAGS)
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-all: analyzer.o ElementaryParticle.o
-	$(CC) -o analyzer.exe analyzer.o ElementaryParticle.o
-clean:
-	rm *.exe
+analyzer: $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
+	rm *.o
