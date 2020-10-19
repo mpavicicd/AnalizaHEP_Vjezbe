@@ -29,26 +29,22 @@
 		else {
 			r = rand() % 1000;
 			if(r < 214){ //21.4% slucajeva raspad na W bozone (0-213)
-				cout << "Raspad na W bozone." << endl;
-				obj1.imecestice = "W bozon";
+				obj1.imecestice = "W boz";
 				obj1.masacestice = 80.39;
 				obj1.ifbozon = true;
 			}
 			else if(r >= 214 && r < 278){ //6.4% slucajeva raspad na tau leptone (214-277)
-				cout << "Raspad na tau leptone." << endl;
-				obj1.imecestice = "tau lepton";
+				obj1.imecestice = "tau l";
 				obj1.masacestice = 1.7768;
 				obj1.ifbozon = false;
 			}
 			else if(r >= 278 && r < 304){ //2.6% slucajeva raspad na tau leptone (278-303)
-				cout << "Raspad na Z bozone." << endl;
-				obj1.imecestice = "Z bozon";
+				obj1.imecestice = "Z boz";
 				obj1.masacestice = 91.19;
 				obj1.ifbozon = true;
 			}
 			else{
-				cout << "Raspad na b kvarkove." << endl;
-				obj1.imecestice = "b kvark";
+				obj1.imecestice = "b kv";
 				obj1.masacestice = 4.18;
 				obj1.ifbozon = false;
 			}
