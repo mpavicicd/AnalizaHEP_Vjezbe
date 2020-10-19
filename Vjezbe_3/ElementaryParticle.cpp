@@ -31,27 +31,30 @@
 			if(r < 214){ //21.4% slucajeva raspad na W bozone (0-213)
 				cout << "Raspad na W bozone." << endl;
 				obj1.imecestice = "W bozon";
-				obj2.imecestice = "W bozon";
-				//trebalo bi dodati postavljanje mase i ifbozon
+				obj1.masacestice = 80.39;
+				obj1.ifbozon = true;
 			}
 			else if(r >= 214 && r < 278){ //6.4% slucajeva raspad na tau leptone (214-277)
 				cout << "Raspad na tau leptone." << endl;
 				obj1.imecestice = "tau lepton";
-				obj2.imecestice = "tau lepton";
-				//trebalo bi dodati postavljanje mase i ifbozon
+				obj1.masacestice = 1.7768;
+				obj1.ifbozon = false;
 			}
 			else if(r >= 278 && r < 304){ //2.6% slucajeva raspad na tau leptone (278-303)
 				cout << "Raspad na Z bozone." << endl;
 				obj1.imecestice = "Z bozon";
-				obj2.imecestice = "Z bozon";
-				//trebalo bi dodati postavljanje mase i ifbozon
+				obj1.masacestice = 91.19;
+				obj1.ifbozon = true;
 			}
 			else{
 				cout << "Raspad na b kvarkove." << endl;
 				obj1.imecestice = "b kvark";
-				obj2.imecestice = "b kvark";
-				//trebalo bi dodati postavljanje mase i ifbozon
+				obj1.masacestice = 4.18;
+				obj1.ifbozon = false;
 			}
+			obj2.imecestice = obj1.imecestice;
+			obj2.masacestice = obj1.masacestice;
+			obj2.ifbozon = obj1.ifbozon;
 			px1 = px * (double)(rand() % 1000)/1000;
 			px2 = px - px1;
 			py1 = py * (double)(rand() % 1000)/1000;
@@ -60,5 +63,6 @@
 			pz2 = pz - pz1;
 			obj1.energija(px1,py1,pz1);
 			obj2.energija(px2,py2,pz2);
+			//cout << "4-vektor druge cestice (E, px, py, pz) iz fje: (" << obj2.en <<", "<< obj2.px <<", "<< obj2.py <<", "<< obj2.pz <<")"<< endl;
 		}
 	}
