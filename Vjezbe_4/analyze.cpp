@@ -3,7 +3,7 @@
 
 int main () {
 	Analyzer *pok;
-	pok->readFile();
+	pok->ConvertTxtToRootFile();
 	delete pok;
   /*srand((int)time(0));
   int i;

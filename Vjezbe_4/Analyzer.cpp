@@ -21,3 +21,58 @@ void Analyzer::readFile(){ //implementacija funkcije za ucitavanje datoteke
 	}
 	File.close();
 } 
+
+void Analyzer::ConvertTxtToRootFile(){
+	Char_t		Ime1;
+	Double_t	Masa1;
+	Bool_t		IfBozon1;
+	Double_t	En1;
+	Double_t	Px1;
+	Double_t	Py1;
+	Double_t	Pz1;
+	Double_t	Pt1;
+	Char_t		Ime2;
+	Double_t	Masa2;
+	Bool_t		IfBozon2;
+	Double_t	En2;
+	Double_t	Px2;
+	Double_t	Py2;
+	Double_t	Pz2;
+	Double_t	Pt2;
+
+	ifstream File("Analysis.txt");
+	TFile *root_file = root_file = TFile::Open("Analysis.root","RECREATE");
+
+	TTree *tree = new TTree("T","Vjezbe_4");
+	tree->Branch("Ime1",&Ime1,"Ime1/C");
+	tree->Branch("Masa1",&Masa1,"Masa1/D");
+	tree->Branch("IfBozon1",&IfBozon1,"IfBozon1/O");
+	tree->Branch("En1",&En1,"En1/D");
+	tree->Branch("Px1",&Px1,"Px1/D");
+	tree->Branch("Py1",&Py1,"Py1/D");
+	tree->Branch("Pz1",&Pz1,"Pz1/D");
+	tree->Branch("Pt1",&Pt1,"Pt1/D");
+	tree->Branch("Ime2",&Ime2,"Ime2/C");
+	tree->Branch("Masa2",&Masa2,"Masa2/D");
+	tree->Branch("IfBozon2",&IfBozon2,"IfBozon2/O");
+	tree->Branch("En2",&En2,"En2/D");
+	tree->Branch("Px2",&Px2,"Px2/D");
+	tree->Branch("Py2",&Py2,"Py2/D");
+	tree->Branch("Pz2",&Pz2,"Pz2/D");
+	tree->Branch("Pt2",&Pt2,"Pt2/D");
+  
+	string line;
+	if (File.is_open())
+	{
+	while ( getline (File,line) )
+	{
+		stringstream lineStream(line);
+		lineStream >> Ime1 >> Masa1 >> IfBozon1 >> En1 >> Px1 >> Py1 >> Pz1 >> Pt1 >> Ime2 >> Masa2 >> IfBozon2 >> En2 >> Px2 >> Py2 >> Pz2 >> Pt2;
+		tree->Fill();
+		}
+	}
+	tree->Print();
+	tree->Write();
+	File.close();
+	delete root_file;
+}

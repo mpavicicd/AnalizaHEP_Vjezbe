@@ -1,12 +1,13 @@
 CC=g++
-CFLAGS=-I.
+CFLAGS=-I. $(shell root-config --cflags)
+LDFLAGS = $(shell root-config --libs)
 DEPS = ElementaryParticle.h Analyzer.h
 
 %.o: %.cpp $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) $(LDFLAGS) -c -o $@ $< $(CFLAGS)
 
 analyzer: analyze.o ElementaryParticle.o Analyzer.o
-	$(CC) -o analyzer analyze.o ElementaryParticle.o Analyzer.o
+	$(CC) $(LDFLAGS) -o analyzer analyze.o ElementaryParticle.o Analyzer.o
 
 clean:
 	rm -rf *.o analyzer
