@@ -1,5 +1,6 @@
 #define Analyzer_cxx
 #include "Analyzer.h"
+#include <TH1F.h>
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -39,11 +40,30 @@ void Analyzer::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
-	   cout << *Ime1 << endl;
+	  //cout << *Ime1 << endl;
    }
-  
 }
+
 void Analyzer::PlotHistogram()
 {
+	TH1F *histo;
+	histo = new TH1F("Histogram", "Transverzalna", 20, 0, 100);
 	
+	//petlja po branchevima
+	if (fChain == 0) return;
+	Long64_t nentries = fChain->GetEntriesFast();
+	Long64_t nbytes = 0, nb = 0;
+	for (Long64_t jentry=0; jentry<nentries;jentry++) {
+		Long64_t ientry = LoadTree(jentry);
+		if (ientry < 0) break;
+		nb = fChain->GetEntry(jentry);   nbytes += nb;
+		// if (Cut(ientry) < 0) continue;
+		//cout << *Ime1 << endl;
+		histo->Fill(Pt1);
+   }
+   TCanvas *canv;
+   canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
+   histo->Draw();
+   canv->SaveAs("Histogram.pdf");
+	delete histo;
 }

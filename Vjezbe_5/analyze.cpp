@@ -5,7 +5,7 @@
 int main () {
 	Analyzer *pok;
 	pok = new Analyzer();
-	pok->Loop();
+	pok->PlotHistogram();
 	delete pok;
 	return 0;
 }
