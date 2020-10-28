@@ -7,6 +7,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TString.h>
 #include <TApplication.h>
 
 

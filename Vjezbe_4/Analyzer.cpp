@@ -23,7 +23,7 @@ void Analyzer::readFile(){ //implementacija funkcije za ucitavanje datoteke
 } 
 
 void Analyzer::ConvertTxtToRootFile(){
-	Char_t		Ime1;
+	string	Ime1;
 	Double_t	Masa1;
 	Bool_t		IfBozon1;
 	Double_t	En1;
@@ -31,7 +31,7 @@ void Analyzer::ConvertTxtToRootFile(){
 	Double_t	Py1;
 	Double_t	Pz1;
 	Double_t	Pt1;
-	Char_t		Ime2;
+	string	Ime2;
 	Double_t	Masa2;
 	Bool_t		IfBozon2;
 	Double_t	En2;
@@ -43,8 +43,8 @@ void Analyzer::ConvertTxtToRootFile(){
 	ifstream File("Analysis.txt");
 	TFile *root_file = root_file = TFile::Open("Analysis.root","RECREATE");
 
-	TTree *tree = new TTree("T","Vjezbe_4");
-	tree->Branch("Ime1",&Ime1,"Ime1/C");
+	TTree *tree = new TTree("Tree","Vjezbe_4");
+	tree->Branch("Ime1",&Ime1);
 	tree->Branch("Masa1",&Masa1,"Masa1/D");
 	tree->Branch("IfBozon1",&IfBozon1,"IfBozon1/O");
 	tree->Branch("En1",&En1,"En1/D");
@@ -52,7 +52,7 @@ void Analyzer::ConvertTxtToRootFile(){
 	tree->Branch("Py1",&Py1,"Py1/D");
 	tree->Branch("Pz1",&Pz1,"Pz1/D");
 	tree->Branch("Pt1",&Pt1,"Pt1/D");
-	tree->Branch("Ime2",&Ime2,"Ime2/C");
+	tree->Branch("Ime2",&Ime2);
 	tree->Branch("Masa2",&Masa2,"Masa2/D");
 	tree->Branch("IfBozon2",&IfBozon2,"IfBozon2/O");
 	tree->Branch("En2",&En2,"En2/D");
