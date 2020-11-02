@@ -4,6 +4,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TLegend.h>
 
 void Analyzer::Loop()
 {
@@ -44,12 +45,13 @@ void Analyzer::Loop()
    }
 }
 
-void Analyzer::PlotHistogram()
+void Analyzer::PlotHistogram() //fja za crtanje histograma
 {
+	/*inicijalizacija i postavljanje histograma*/
 	TH1F *histo;
-	histo = new TH1F("Histogram", "Transverzalna", 50, 0, 100);
-	
-	//petlja po branchevima
+	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
+	histo = new TH1F("Histogram", "Transverzalna kolicina gibanja prve cestice raspada", 50, 0, 100);
+	//puni histogram podacima
 	if (fChain == 0) return;
 	Long64_t nentries = fChain->GetEntriesFast();
 	Long64_t nbytes = 0, nb = 0;
@@ -57,18 +59,44 @@ void Analyzer::PlotHistogram()
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
-		// if (Cut(ientry) < 0) continue;
-		//cout << *Ime1 << endl;
 		histo->Fill(Pt1);
-   }
-   histo->GetXaxis()->SetTitle("p_T(GeV)");
-   histo->GetYaxis()->SetTitle("Events");
-   histo->SetLineColor(2);
-   histo->SetFillStyle(1001);
-   histo->SetFillColor(2);
-   TCanvas *canv;
-   canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
-   histo->Draw();
-   canv->SaveAs("Histogram.pdf");
-	delete histo;
+	}
+
+	/*uredivanje svojstava histograma*/
+	histo->GetXaxis()->SetTitle("p_T(GeV)"); //postavlja oznaku na x-osi
+	histo->GetYaxis()->SetTitle("Events"); //postavlja oznaku na y-osi
+	histo->SetLineColor(2); //postavlja boju linije
+	//boje navedene na https://root.cern.ch/doc/master/classTAttLine.html
+	histo->SetFillStyle(1001); //postavlja stil ispune
+	histo->SetFillColor(2); //postavlja boju ispune
+	//boje i stil navedeni na https://root.cern.ch/doc/master/classTAttFill.html
+	//gStyle->SetOptStat("n"); //u opisu ispisi samo naziv histograma
+	gStyle->SetOptStat(0); //uklanja statisticki opis
+
+	/*dodavanje legende - https://root.cern.ch/doc/master/classTLegend.html*/
+	TLegend *tl;
+	//pozivanje konstruktora za legendu
+	//(Double_t x1, Double_t y1, Double_t x2, Double_t y2, const char* header = "", Option_t* option = "brNDC")
+	//x1,y1,x2,y2 - the coordinates of the Legend in the current pad
+	//header - the title displayed at the top of the legend (default is no header (header = 0))
+	//options - defines looks of the box, more at https://root.cern.ch/doc/master/classTPave.html#ac9ec1ee85b11f589e9a24c609872095d
+	tl = new TLegend(0.6,0.85,0.9,0.9);
+	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
+	tl->AddEntry(histo, "podaci iz simulacije", "l");
+
+	TCanvas *canv; //stvaranje platna
+	//pozivanje konstruktora za platno
+	/*(const char* name, const char* title, Int_t wtopx, Int_t wtopy, Int_t ww, Int_t wh)
+	name - canvas name
+	title - canvas title
+	wtopx,wtopy - pixel coordinates of the top left corner of the canvas (if wtopx < 0 the menubar is not shown)
+	ww - canvas size in pixels along X
+	wh - canvas size in pixels along Y*/
+	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
+
+	histo->Draw(); //nacrtaj histogram na danom platnu
+	tl->Draw(); //nacrtaj legendu na danom platnu
+	canv->SaveAs("Histogram.pdf"); //spremi platno kao
+
+	delete histo; //brisanje pokazivaca
 }
