@@ -48,10 +48,12 @@ void Analyzer::Loop()
 void Analyzer::PlotHistogram() //fja za crtanje histograma
 {
 	/*inicijalizacija i postavljanje histograma*/
-	TH1F *histo;
+	TH1F *histo1, *histo2;
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo = new TH1F("Histogram", "Transverzalna kolicina gibanja prve cestice raspada", 50, 0, 100);
-	//puni histogram podacima
+	histo1 = new TH1F("Histogram", "Transversal momentum of the first decay particle", 50, 0, 100);
+	histo2 = new TH1F("Histogram", "Transversal momentum of decay particles", 50, 0, 100);
+	histo1->SetMaximum(350); //postavljanje yrange
+	//petlja koja puni histogram podacima
 	if (fChain == 0) return;
 	Long64_t nentries = fChain->GetEntriesFast();
 	Long64_t nbytes = 0, nb = 0;
@@ -59,16 +61,18 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
-		histo->Fill(Pt1);
+		histo1->Fill(Pt1);
+		histo2->Fill(Pt2);
 	}
 
 	/*uredivanje svojstava histograma*/
-	histo->GetXaxis()->SetTitle("p_T(GeV)"); //postavlja oznaku na x-osi
-	histo->GetYaxis()->SetTitle("Events"); //postavlja oznaku na y-osi
-	histo->SetLineColor(2); //postavlja boju linije
+	histo1->GetXaxis()->SetTitle("Transversal momentum [GeV/c]"); //postavlja oznaku na x-osi
+	histo1->GetYaxis()->SetTitle("Events"); //postavlja oznaku na y-osi
+	histo1->SetLineColor(2); //postavlja boju linije
+	histo2->SetLineColor(4);
 	//boje navedene na https://root.cern.ch/doc/master/classTAttLine.html
-	histo->SetFillStyle(1001); //postavlja stil ispune
-	histo->SetFillColor(2); //postavlja boju ispune
+	histo1->SetFillStyle(1001); //postavlja stil ispune
+	histo1->SetFillColor(2); //postavlja boju ispune
 	//boje i stil navedeni na https://root.cern.ch/doc/master/classTAttFill.html
 	//gStyle->SetOptStat("n"); //u opisu ispisi samo naziv histograma
 	gStyle->SetOptStat(0); //uklanja statisticki opis
@@ -82,7 +86,8 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 	//options - defines looks of the box, more at https://root.cern.ch/doc/master/classTPave.html#ac9ec1ee85b11f589e9a24c609872095d
 	tl = new TLegend(0.6,0.85,0.9,0.9);
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	tl->AddEntry(histo, "podaci iz simulacije", "l");
+	tl->AddEntry(histo1, "1st decay particle", "l");
+	//tl->AddEntry(histo2, "2nd decay particle", "l");
 
 	TCanvas *canv; //stvaranje platna
 	//pozivanje konstruktora za platno
@@ -94,9 +99,11 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 	wh - canvas size in pixels along Y*/
 	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
 
-	histo->Draw(); //nacrtaj histogram na danom platnu
+	histo1->Draw(); //nacrtaj histogram na danom platnu
+	//histo2->Draw("same");
 	tl->Draw(); //nacrtaj legendu na danom platnu
-	canv->SaveAs("Histogram.pdf"); //spremi platno kao
+	canv->SaveAs("Histogram_Z3.pdf"); //spremi platno kao
 
-	delete histo; //brisanje pokazivaca
+	delete histo1; //brisanje pokazivaca
+	delete histo2;
 }
