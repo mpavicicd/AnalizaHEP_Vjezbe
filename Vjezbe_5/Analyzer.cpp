@@ -59,10 +59,9 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 	/*inicijalizacija i postavljanje histograma*/
 	TH1F *histo1, *histo2, *histo3;
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Decay particles transverse momentum", 50, 0, 140);
-	histo2 = new TH1F("Histogram", "Decay particles transverse momentum", 50, 0, 140);
-	histo3 = new TH1F("Histogram", "Higgs boson transverse momentum", 50, 0, 140);
-	//histo1->SetMaximum(350); //postavljanje yrange
+	histo1 = new TH1F("Histogram", "Decay particles transverse momentum", 100, 0, 140);
+	histo2 = new TH1F("Histogram", "Decay particles transverse momentum", 100, 0, 140);
+	histo3 = new TH1F("Histogram", "Higgs boson transverse momentum", 100, 0, 140);
 	//petlja koja puni histogram podacima
 	if (fChain == 0) return;
 	Long64_t nentries = fChain->GetEntriesFast();
