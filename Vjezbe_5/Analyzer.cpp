@@ -50,9 +50,9 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 	/*inicijalizacija i postavljanje histograma*/
 	TH1F *histo1, *histo2;
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Transversal momentum of the first decay particle", 50, 0, 100);
-	histo2 = new TH1F("Histogram", "Transversal momentum of decay particles", 50, 0, 100);
-	histo1->SetMaximum(350); //postavljanje yrange
+	histo1 = new TH1F("Histogram", "Transversal momentum of the first decay particle", 50, 0, 140);
+	histo2 = new TH1F("Histogram", "Transversal momentum of decay particles", 50, 0, 140);
+	//histo1->SetMaximum(350); //postavljanje yrange
 	//petlja koja puni histogram podacima
 	if (fChain == 0) return;
 	Long64_t nentries = fChain->GetEntriesFast();
@@ -84,7 +84,7 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 	//x1,y1,x2,y2 - the coordinates of the Legend in the current pad
 	//header - the title displayed at the top of the legend (default is no header (header = 0))
 	//options - defines looks of the box, more at https://root.cern.ch/doc/master/classTPave.html#ac9ec1ee85b11f589e9a24c609872095d
-	tl = new TLegend(0.6,0.85,0.9,0.9);
+	tl = new TLegend(0.6,0.83,0.9,0.9,"results of the simulation");
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
 	tl->AddEntry(histo1, "1st decay particle", "l");
 	//tl->AddEntry(histo2, "2nd decay particle", "l");
