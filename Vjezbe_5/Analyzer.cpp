@@ -5,6 +5,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TLegend.h>
+#include <TLorentzVector.h>
 
 void Analyzer::Loop()
 {
@@ -47,11 +48,20 @@ void Analyzer::Loop()
 
 void Analyzer::PlotHistogram() //fja za crtanje histograma
 {
+	//cestice raspada kao elementi klase TLorentzVector
+	TLorentzVector *cestica1;
+	TLorentzVector *cestica2;
+	TLorentzVector *pocetna;
+	cestica1 = new TLorentzVector();
+	cestica2 = new TLorentzVector();
+	pocetna = new TLorentzVector();;
+	
 	/*inicijalizacija i postavljanje histograma*/
-	TH1F *histo1, *histo2;
+	TH1F *histo1, *histo2, *histo3;
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Transversal momentum of decay particles", 50, 0, 140);
-	histo2 = new TH1F("Histogram", "Transversal momentum of decay particles", 50, 0, 140);
+	histo1 = new TH1F("Histogram", "Decay particles transverse momentum", 50, 0, 140);
+	histo2 = new TH1F("Histogram", "Decay particles transverse momentum", 50, 0, 140);
+	histo3 = new TH1F("Histogram", "Higgs boson transverse momentum", 50, 0, 140);
 	//histo1->SetMaximum(350); //postavljanje yrange
 	//petlja koja puni histogram podacima
 	if (fChain == 0) return;
@@ -61,33 +71,47 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
+		cestica1->SetPxPyPzE(Px1, Py1, Pz1, En1); //stvaranje 4-vektora
+		cestica2->SetPxPyPzE(Px2, Py2, Pz2, En2);
+		*pocetna = *cestica1 + *cestica2;
 		histo1->Fill(Pt1);
 		histo2->Fill(Pt2);
+		//ispuni treci histogram s p_T pocetne cestice
+		histo3->Fill(sqrt(pocetna->Px()*pocetna->Px() + pocetna->Py()*pocetna->Py()));
 	}
 
 	/*uredivanje svojstava histograma*/
-	histo1->GetXaxis()->SetTitle("Transversal momentum [GeV/c]"); //postavlja oznaku na x-osi
+	histo1->GetXaxis()->SetTitle("Transverse momentum [GeV/c]"); //postavlja oznaku na x-osi
 	histo1->GetYaxis()->SetTitle("Events"); //postavlja oznaku na y-osi
+	histo3->GetXaxis()->SetTitle("Transverse momentum [GeV/c]");
+	histo3->GetYaxis()->SetTitle("Events");
 	histo1->SetLineColor(2); //postavlja boju linije
 	histo2->SetLineColor(4);
+	histo3->SetLineColor(3);
 	//boje navedene na https://root.cern.ch/doc/master/classTAttLine.html
 	histo1->SetFillStyle(1001); //postavlja stil ispune
 	histo1->SetFillColor(2); //postavlja boju ispune
+	histo3->SetFillStyle(1001); //postavlja stil ispune
+	histo3->SetFillColor(3); //postavlja boju ispune
 	//boje i stil navedeni na https://root.cern.ch/doc/master/classTAttFill.html
 	//gStyle->SetOptStat("n"); //u opisu ispisi samo naziv histograma
 	gStyle->SetOptStat(0); //uklanja statisticki opis
 
 	/*dodavanje legende - https://root.cern.ch/doc/master/classTLegend.html*/
-	TLegend *tl;
+	TLegend *leg1, *leg2;
 	//pozivanje konstruktora za legendu
 	//(Double_t x1, Double_t y1, Double_t x2, Double_t y2, const char* header = "", Option_t* option = "brNDC")
 	//x1,y1,x2,y2 - the coordinates of the Legend in the current pad
 	//header - the title displayed at the top of the legend (default is no header (header = 0))
 	//options - defines looks of the box, more at https://root.cern.ch/doc/master/classTPave.html#ac9ec1ee85b11f589e9a24c609872095d
-	tl = new TLegend(0.6,0.78,0.9,0.9,"results of the simulation");
+	leg1 = new TLegend(0.6,0.78,0.9,0.9,"Simulation results");
+	leg2 = new TLegend(0.1,0.83,0.58,0.9,"Calculation from the simulation results");
+	leg1->SetTextSize(.03); //postavljanje velicine teksta - izrazeno u postotku velicine trenutkog odjeljka
+	leg2->SetTextSize(.03);
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	tl->AddEntry(histo1, "1st decay particle", "l");
-	tl->AddEntry(histo2, "2nd decay particle", "l");
+	leg1->AddEntry(histo1, "1st decay particle", "l");
+	leg1->AddEntry(histo2, "2nd decay particle", "l");
+	leg2->AddEntry(histo3, "Higgs boson", "l");
 
 	TCanvas *canv; //stvaranje platna
 	//pozivanje konstruktora za platno
@@ -98,12 +122,25 @@ void Analyzer::PlotHistogram() //fja za crtanje histograma
 	ww - canvas size in pixels along X
 	wh - canvas size in pixels along Y*/
 	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
+	canv->Divide(2,1); //podjela platna na 2 stupca, 1 redak
 
+	//crtanje na lijevoj strani platna
+	canv->cd(1); //postavljanje prvog odjeljka ("pad") kao aktivnog
 	histo1->Draw(); //nacrtaj histogram na danom platnu
-	histo2->Draw("same");
-	tl->Draw(); //nacrtaj legendu na danom platnu
-	canv->SaveAs("Histogram_Z4.pdf"); //spremi platno kao
+	histo2->Draw("same"); //same - crtaj na istom platnu
+	leg1->Draw(); //nacrtaj legendu na danom platnu
+
+	//crtanje na desnoj strani platna
+	canv->cd(2);
+	histo3->Draw();
+	leg2->Draw();
+
+	canv->SaveAs("Histogram_Z5.pdf"); //spremi platno kao...
 
 	delete histo1; //brisanje pokazivaca
 	delete histo2;
+	delete histo3;
+	delete cestica1;
+	delete cestica2;
+	delete pocetna;
 }
