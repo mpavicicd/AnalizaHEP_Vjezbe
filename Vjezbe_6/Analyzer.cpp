@@ -47,25 +47,27 @@ void Analyzer::Loop()
 }
 
 void Analyzer::PlotHistogram(){
+	double weight; //w=L*sigma*w_ev / sum(w_ev)
+	double L = 137; //luminozitet
 	/*inicijalizacija i postavljanje histograma*/
 	TH1F *histo1, *histo2, *histo3, *histo4; //4 histograma za 4 komponente pT
 	TH1F *histo5, *histo6, *histo7, *histo8; //4 histograma za pseudorapiditet
 	TH1F *histo9, *histo10, *histo11, *histo12; //4 histograma za azimutalni kut
 	TH1F *histo13, *histo14, *histo15, *histo16; //4 histograma za BDT rezultat
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Decay leptons transverse momentum", 70, 0, 140);
+	histo1 = new TH1F("Histogram", "Decay leptons transverse momentum with event weight included", 70, 0, 140);
 	histo2 = new TH1F("Histogram", "", 70, 0, 140);
 	histo3 = new TH1F("Histogram", "", 70, 0, 140);
 	histo4 = new TH1F("Histogram", "", 70, 0, 140);
-	histo5 = new TH1F("Histogram", "Decay leptons pseudorapidity", 60, -3, 3);
+	histo5 = new TH1F("Histogram", "Decay leptons pseudorapidity with event weight included", 60, -3, 3);
 	histo6 = new TH1F("Histogram", "", 60, -3, 3);
 	histo7 = new TH1F("Histogram", "", 60, -3, 3);
 	histo8 = new TH1F("Histogram", "", 60, -3, 3);
-	histo9 = new TH1F("Histogram", "Decay leptons azimuthal angle", 70, -3.5, 3.5);
+	histo9 = new TH1F("Histogram", "Decay leptons azimuthal angle with event weight included", 70, -3.5, 3.5);
 	histo10 = new TH1F("Histogram", "", 70, -3.5, 3.5);
 	histo11 = new TH1F("Histogram", "", 70, -3.5, 3.5);
 	histo12 = new TH1F("Histogram", "", 70, -3.5, 3.5);
-	histo13 = new TH1F("Histogram", "Decay leptons BDT result", 110, -1, 10);
+	histo13 = new TH1F("Histogram", "Decay leptons BDT result with event weight included", 110, -1, 10);
 	histo14 = new TH1F("Histogram", "", 110, -1, 10);
 	histo15 = new TH1F("Histogram", "", 110, -1, 10);
 	histo16 = new TH1F("Histogram", "", 110, -1, 10);
@@ -78,22 +80,23 @@ void Analyzer::PlotHistogram(){
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
-		histo1->Fill(LepPt->at(0));
-		histo2->Fill(LepPt->at(1));
-		histo3->Fill(LepPt->at(2));
-		histo4->Fill(LepPt->at(3));
-		histo5->Fill(LepEta->at(0));
-		histo6->Fill(LepEta->at(1));
-		histo7->Fill(LepEta->at(2));
-		histo8->Fill(LepEta->at(3));
-		histo9->Fill(LepPhi->at(0));
-		histo10->Fill(LepPhi->at(1));
-		histo11->Fill(LepPhi->at(2));
-		histo12->Fill(LepPhi->at(3));
-		histo13->Fill(LepBDT->at(0));
-		histo14->Fill(LepBDT->at(1));
-		histo15->Fill(LepBDT->at(2));
-		histo16->Fill(LepBDT->at(3));
+		weight = (L*xsec*1000*overallEventWeight)/(h1->GetBinContent(40));
+		histo1->Fill(LepPt->at(0),weight);
+		histo2->Fill(LepPt->at(1),weight);
+		histo3->Fill(LepPt->at(2),weight);
+		histo4->Fill(LepPt->at(3),weight);
+		histo5->Fill(LepEta->at(0),weight);
+		histo6->Fill(LepEta->at(1),weight);
+		histo7->Fill(LepEta->at(2),weight);
+		histo8->Fill(LepEta->at(3),weight);
+		histo9->Fill(LepPhi->at(0),weight);
+		histo10->Fill(LepPhi->at(1),weight);
+		histo11->Fill(LepPhi->at(2),weight);
+		histo12->Fill(LepPhi->at(3),weight);
+		histo13->Fill(LepBDT->at(0),weight);
+		histo14->Fill(LepBDT->at(1),weight);
+		histo15->Fill(LepBDT->at(2),weight);
+		histo16->Fill(LepBDT->at(3),weight);
    }
    /*uredivanje svojstava histograma*/
 	histo1->GetXaxis()->SetTitle("p_{T} [GeV/c]"); //postavlja oznaku na x-osi
@@ -105,7 +108,7 @@ void Analyzer::PlotHistogram(){
 	histo1->SetFillStyle(1001); //postavlja stil ispune
 	histo1->SetFillColor(kBlue+1);//postavlja boju ispune
 	histo4->SetFillColorAlpha(kGreen+2,0.35);
-	histo1->SetMaximum(15000); //postavljanje yrange
+	histo1->SetMaximum(30); //postavljanje yrange
 	
 	histo5->GetXaxis()->SetTitle("#eta");
 	histo5->GetYaxis()->SetTitle("Events / 0.1");
@@ -116,10 +119,10 @@ void Analyzer::PlotHistogram(){
 	histo5->SetFillStyle(1001); //postavlja stil ispune
 	histo5->SetFillColor(kBlue+1);//postavlja boju ispune
 	histo8->SetFillColorAlpha(kGreen+2,0.35);
-	histo5->SetMaximum(5000); //postavljanje yrange
+	histo5->SetMaximum(10); //postavljanje yrange
 	
 	histo9->GetXaxis()->SetTitle("#phi [rad]");
-	histo9->GetYaxis()->SetTitle("Events / 0.1");
+	histo9->GetYaxis()->SetTitle("Events / 0.1 rad");
 	histo9->SetLineColor(kBlue+1); //postavlja boju linije, alpha - prozirnost
 	histo10->SetLineColor(kOrange+6);
 	histo11->SetLineColor(kMagenta+2);
@@ -127,7 +130,7 @@ void Analyzer::PlotHistogram(){
 	histo9->SetFillStyle(1001); //postavlja stil ispune
 	histo9->SetFillColor(kBlue+1);//postavlja boju ispune
 	histo12->SetFillColorAlpha(kGreen+2,0.35);
-	histo9->SetMaximum(3000); //postavljanje yrange
+	histo9->SetMaximum(6); //postavljanje yrange
 	
 	histo13->GetXaxis()->SetTitle("BDT");
 	histo13->GetYaxis()->SetTitle("Events / 0.1");
@@ -138,7 +141,7 @@ void Analyzer::PlotHistogram(){
 	histo13->SetFillStyle(1001); //postavlja stil ispune
 	histo13->SetFillColor(kBlue+1);//postavlja boju ispune
 	histo16->SetFillColorAlpha(kGreen+2,0.35);
-	histo13->SetMaximum(60000); //postavljanje yrange
+	histo13->SetMaximum(100); //postavljanje yrange
 	
 	gStyle->SetOptStat(0); //uklanja statisticki opis
 	
@@ -186,34 +189,34 @@ void Analyzer::PlotHistogram(){
 	canv->Divide(2,2); //podjela platna na 2 stupca, 2 retka
 	
 	canv->cd(1); //postavljanje prvog odjeljka ("pad") kao aktivnog
-	histo1->Draw(); //nacrtaj histogram na danom platnu
-	histo2->Draw("same");
-	histo3->Draw("same");
-	histo4->Draw("same");
+	histo1->Draw("HISTO"); //nacrtaj histogram na danom platnu
+	histo2->Draw("HISTO same");
+	histo3->Draw("HISTO same");
+	histo4->Draw("HISTO same");
 	leg1->Draw();
 	
 	canv->cd(2);
-	histo5->Draw();
-	histo6->Draw("same");
-	histo7->Draw("same");
-	histo8->Draw("same");
+	histo5->Draw("HISTO");
+	histo6->Draw("HISTO same");
+	histo7->Draw("HISTO same");
+	histo8->Draw("HISTO same");
 	leg2->Draw();
 	
 	canv->cd(3);
-	histo9->Draw();
-	histo10->Draw("same");
-	histo11->Draw("same");
-	histo12->Draw("same");
+	histo9->Draw("HISTO");
+	histo10->Draw("HISTO same");
+	histo11->Draw("HISTO same");
+	histo12->Draw("HISTO same");
 	leg3->Draw();
 	
 	canv->cd(4);
-	histo13->Draw();
-	histo14->Draw("same");
-	histo15->Draw("same");
-	histo16->Draw("same");
+	histo13->Draw("HISTO");
+	histo14->Draw("HISTO same");
+	histo15->Draw("HISTO same");
+	histo16->Draw("HISTO same");
 	leg4->Draw();
 	
-	canv->SaveAs("Histogram_Z2.pdf"); //spremi platno kao...
+	canv->SaveAs("Histogram_Z4_leptons.pdf"); //spremi platno kao...
 	
 	delete histo1; //brisanje pokazivaca
 	delete histo2;
@@ -258,14 +261,14 @@ void Analyzer::HiggsKonstr(){
 	Higgs = new TLorentzVector();
 	TH1F *histo1;
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Higgs mass with event weight included", 50, 90, 140);
+	histo1 = new TH1F("Histogram", "Higgs mass with event weight included", 25, 90, 140);
 
 	/*postavke izgleda histograma*/
 	histo1->SetLineColor(kBlue+1); //postavlja boju linije, alpha - prozirnost
 	histo1->SetFillStyle(1001); //postavlja stil ispune
 	histo1->SetFillColor(kBlue+1);//postavlja boju ispune
 	gStyle->SetOptStat(0); //uklanja statisticki opis
-	histo1->SetMaximum(55); //postavljanje yrange
+	histo1->SetMaximum(100); //postavljanje yrange
 
 	/*dodavanje legende*/
 	TLegend *leg1;
@@ -312,7 +315,7 @@ void Analyzer::HiggsKonstr(){
 	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
 	histo1->Draw("HISTO"); //nacrtaj histogram na danom platnu
 	leg1->Draw();
-	canv->SaveAs("Histogram_Z4.pdf"); //spremi platno kao...
+	canv->SaveAs("Histogram_Z4_Higgs.pdf"); //spremi platno kao...
 	//cout << "Povrsina:" << histo1->Integral();
 	
 	delete histo1; //brisanje pokazivaca

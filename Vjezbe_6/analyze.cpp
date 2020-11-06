@@ -5,7 +5,8 @@
 int main () {
 	Analyzer *pok;
 	pok = new Analyzer();
-	pok->HiggsKonstr();
+	pok->PlotHistogram();
+	//pok->HiggsKonstr();
 	delete pok;
 	return 0;
 }
