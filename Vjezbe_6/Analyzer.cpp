@@ -99,7 +99,7 @@ void Analyzer::PlotHistogram(){
 		histo16->Fill(LepBDT->at(3),weight);
    }
    /*uredivanje svojstava histograma*/
-	histo1->GetXaxis()->SetTitle("p_{T} [GeV/c]"); //postavlja oznaku na x-osi
+	histo1->GetXaxis()->SetTitle("p_{T} [GeV]"); //postavlja oznaku na x-osi
 	histo1->GetYaxis()->SetTitle("Events / 2 GeV"); //postavlja oznaku na y-osi
 	histo1->SetLineColor(kBlue+1); //postavlja boju linije, alpha - prozirnost
 	histo2->SetLineColor(kOrange+6);
