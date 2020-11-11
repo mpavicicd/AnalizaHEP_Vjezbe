@@ -76,7 +76,7 @@ void Analyzer::PlotHistogram(TString putanja){ //putanja = "/home/public/data/gg
 	TDirectory * dir = (TDirectory*)f->Get(putanja+":/ZZTree");
 	dir->GetObject("candTree",tree);
 
-	Init(tree);
+	Init(tree, putanja);
 	h1 = (TH1F*)f->Get("ZZTree/Counters");
 	/*inicijalizacija i postavljanje histograma*/
 	TH1F *histo1, *histo2, *histo3, *histo4; //4 histograma za 4 komponente pT
@@ -233,7 +233,7 @@ void Analyzer::PlotHistogram(TString putanja){ //putanja = "/home/public/data/gg
 	wtopx,wtopy - pixel coordinates of the top left corner of the canvas (if wtopx < 0 the menubar is not shown)
 	ww - canvas size in pixels along X
 	wh - canvas size in pixels along Y*/
-	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
+	canv = new TCanvas("canvas for distribution","Profile histogram example",200, 10,700,500);
 	canv->Divide(2,2); //podjela platna na 2 stupca, 2 retka
 	
 	canv->cd(1); //postavljanje prvog odjeljka ("pad") kao aktivnog
@@ -332,7 +332,7 @@ void Analyzer::PlotMass(){
 	wtopx,wtopy - pixel coordinates of the top left corner of the canvas (if wtopx < 0 the menubar is not shown)
 	ww - canvas size in pixels along X
 	wh - canvas size in pixels along Y*/
-	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
+	canv = new TCanvas("canvas for mass","Profile histogram example",200, 10,700,500);
 	THStack *stack;
 	stack = new THStack();
 	stack->Add(mass_background_histo);
@@ -378,9 +378,13 @@ void Analyzer::PlotDiscriminator(){
 	wtopx,wtopy - pixel coordinates of the top left corner of the canvas (if wtopx < 0 the menubar is not shown)
 	ww - canvas size in pixels along X
 	wh - canvas size in pixels along Y*/
-	canv = new TCanvas("c1","Profile histogram example",200, 10,700,500);
-	disc_signal_histo->DrawNormalized("HISTO"); //nacrtaj histogram na danom platnu
-	disc_background_histo->DrawNormalized("HISTO same");
+	canv = new TCanvas("canvas for discriminator","Profile histogram example",200, 10,700,500);
+	/*normalizacija*/
+	Double_t factor = 1.;
+	disc_signal_histo->Scale(factor/disc_signal_histo->Integral());
+	disc_background_histo->Scale(factor/disc_background_histo->Integral());
+	disc_signal_histo->Draw("HISTO"); //nacrtaj histogram na danom platnu
+	disc_background_histo->Draw("HISTO same");
 	leg1->Draw();
 	canv->SaveAs("Histogram_discriminator.pdf"); //spremi platno kao...
 	

@@ -1437,7 +1437,7 @@ public :
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree);
+   virtual void     Init(TTree *tree, TString putanja);
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
@@ -1489,7 +1489,7 @@ Long64_t Analyzer::LoadTree(Long64_t entry)
    return centry;
 }
 
-void Analyzer::Init(TTree *tree)
+void Analyzer::Init(TTree *tree, TString putanja)
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1740,6 +1740,7 @@ void Analyzer::Init(TTree *tree)
    fChain->SetBranchAddress("ExtraLepPhi", &ExtraLepPhi, &b_ExtraLepPhi);
    fChain->SetBranchAddress("ExtraLepLepId", &ExtraLepLepId, &b_ExtraLepLepId);
    fChain->SetBranchAddress("ZXFakeweight", &ZXFakeweight, &b_ZXFakeweight);
+   if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
    fChain->SetBranchAddress("KFactor_QCD_ggZZ_Nominal", &KFactor_QCD_ggZZ_Nominal, &b_KFactor_QCD_ggZZ_Nominal);
    fChain->SetBranchAddress("KFactor_QCD_ggZZ_PDFScaleDn", &KFactor_QCD_ggZZ_PDFScaleDn, &b_KFactor_QCD_ggZZ_PDFScaleDn);
    fChain->SetBranchAddress("KFactor_QCD_ggZZ_PDFScaleUp", &KFactor_QCD_ggZZ_PDFScaleUp, &b_KFactor_QCD_ggZZ_PDFScaleUp);
@@ -1749,6 +1750,7 @@ void Analyzer::Init(TTree *tree)
    fChain->SetBranchAddress("KFactor_QCD_ggZZ_AsUp", &KFactor_QCD_ggZZ_AsUp, &b_KFactor_QCD_ggZZ_AsUp);
    fChain->SetBranchAddress("KFactor_QCD_ggZZ_PDFReplicaDn", &KFactor_QCD_ggZZ_PDFReplicaDn, &b_KFactor_QCD_ggZZ_PDFReplicaDn);
    fChain->SetBranchAddress("KFactor_QCD_ggZZ_PDFReplicaUp", &KFactor_QCD_ggZZ_PDFReplicaUp, &b_KFactor_QCD_ggZZ_PDFReplicaUp);
+   }
    fChain->SetBranchAddress("genFinalState", &genFinalState, &b_genFinalState);
    fChain->SetBranchAddress("genProcessId", &genProcessId, &b_genProcessId);
    fChain->SetBranchAddress("genHEPMCweight", &genHEPMCweight, &b_genHEPMCweight);
@@ -1810,6 +1812,7 @@ void Analyzer::Init(TTree *tree)
    fChain->SetBranchAddress("htxsHPt", &htxsHPt, &b_htxsHPt);
    fChain->SetBranchAddress("htxs_stage0_cat", &htxs_stage0_cat, &b_htxs_stage0_cat);
    fChain->SetBranchAddress("htxs_stage1_cat", &htxs_stage1_cat, &b_htxs_stage1_cat);
+   if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
    fChain->SetBranchAddress("ggH_NNLOPS_weight", &ggH_NNLOPS_weight, &b_ggH_NNLOPS_weight);
    fChain->SetBranchAddress("ggH_NNLOPS_weight_unc", &ggH_NNLOPS_weight_unc, &b_ggH_NNLOPS_weight_unc);
    fChain->SetBranchAddress("qcd_ggF_uncertSF", &qcd_ggF_uncertSF, &b_qcd_ggF_uncertSF);
@@ -1826,6 +1829,7 @@ void Analyzer::Init(TTree *tree)
    fChain->SetBranchAddress("LHEAssociatedParticlePhi", &LHEAssociatedParticlePhi, &b_LHEAssociatedParticlePhi);
    fChain->SetBranchAddress("LHEAssociatedParticleMass", &LHEAssociatedParticleMass, &b_LHEAssociatedParticleMass);
    fChain->SetBranchAddress("LHEAssociatedParticleId", &LHEAssociatedParticleId, &b_LHEAssociatedParticleId);
+   }
    fChain->SetBranchAddress("LHEPDFScale", &LHEPDFScale, &b_LHEPDFScale);
    fChain->SetBranchAddress("LHEweight_QCDscale_muR1_muF1", &LHEweight_QCDscale_muR1_muF1, &b_LHEweight_QCDscale_muR1_muF1);
    fChain->SetBranchAddress("LHEweight_QCDscale_muR1_muF2", &LHEweight_QCDscale_muR1_muF2, &b_LHEweight_QCDscale_muR1_muF2);
@@ -2249,6 +2253,7 @@ void Analyzer::Init(TTree *tree)
    fChain->SetBranchAddress("p_JJVBF_SIG_ghv1_1_JHUGen_JECDn_BestDJJ", &p_JJVBF_SIG_ghv1_1_JHUGen_JECDn_BestDJJ, &b_p_JJVBF_SIG_ghv1_1_JHUGen_JECDn_BestDJJ);
    fChain->SetBranchAddress("pConst_JJQCD_SIG_ghg2_1_JHUGen_JECDn_BestDJJ", &pConst_JJQCD_SIG_ghg2_1_JHUGen_JECDn_BestDJJ, &b_pConst_JJQCD_SIG_ghg2_1_JHUGen_JECDn_BestDJJ);
    fChain->SetBranchAddress("p_JJQCD_SIG_ghg2_1_JHUGen_JECDn_BestDJJ", &p_JJQCD_SIG_ghg2_1_JHUGen_JECDn_BestDJJ, &b_p_JJQCD_SIG_ghg2_1_JHUGen_JECDn_BestDJJ);
+   if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
    fChain->SetBranchAddress("p_Gen_CPStoBWPropRewgt", &p_Gen_CPStoBWPropRewgt, &b_p_Gen_CPStoBWPropRewgt);
    fChain->SetBranchAddress("p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM", &p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM, &b_p_Gen_GG_SIG_kappaTopBot_1_ghz1_1_MCFM);
    fChain->SetBranchAddress("p_Gen_GG_SIG_kappaTopBot_1_ghz1prime2_1E4_MCFM", &p_Gen_GG_SIG_kappaTopBot_1_ghz1prime2_1E4_MCFM, &b_p_Gen_GG_SIG_kappaTopBot_1_ghz1prime2_1E4_MCFM);
@@ -2289,6 +2294,7 @@ void Analyzer::Init(TTree *tree)
    fChain->SetBranchAddress("p_Gen_GG_SIG_gXg5_1_gXz8_1_JHUGen", &p_Gen_GG_SIG_gXg5_1_gXz8_1_JHUGen, &b_p_Gen_GG_SIG_gXg5_1_gXz8_1_JHUGen);
    fChain->SetBranchAddress("p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen", &p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen, &b_p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen);
    fChain->SetBranchAddress("p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen", &p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen, &b_p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen);
+   }
    Notify();
 }
 
