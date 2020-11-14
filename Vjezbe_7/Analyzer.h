@@ -31,6 +31,7 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
+   //{
    Int_t           RunNumber;
    Long64_t        EventNumber;
    Int_t           LumiNumber;
@@ -730,8 +731,10 @@ public :
    Float_t         p_Gen_GG_SIG_gXg5_1_gXz8_1_JHUGen;
    Float_t         p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen;
    Float_t         p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen;
+   //}
 
    // List of branches
+   //{
    TBranch        *b_RunNumber;   //!
    TBranch        *b_EventNumber;   //!
    TBranch        *b_LumiNumber;   //!
@@ -1431,37 +1434,46 @@ public :
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz8_1_JHUGen;   //!
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen;   //!
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen;   //!
+//}
 
-   Analyzer();
+   Analyzer(int disc_numofbins); //konstruktor
    virtual ~Analyzer();
    virtual Int_t    Cut(Long64_t entry);
    virtual Int_t    GetEntry(Long64_t entry);
    virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree, TString putanja);
+   virtual void     Init(TTree *tree, TString putanja); //kao parametar dodana putanja
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   public:
-		void PlotHistogram(TString putanja);
-		void PlotMass();
-		void PlotDiscriminator();
-		TH1F *h1;
+   
+   /*user defined variables and functions*/
+   public: 
+		void	PlotHistogram(TString putanja);
+		void	PlotMass();
+		void	PlotDiscriminator();
+		TH1F	*h1;
 		TH1F	*mass_signal_histo;
 		TH1F	*mass_background_histo;
+		TH1F	*disc_signal_histo_10;
+		TH1F	*disc_background_histo_10;
 		TH1F	*disc_signal_histo;
 		TH1F	*disc_background_histo;
+		int		number_of_bins_for_discriminator;
 };
 
 #endif
 
 #ifdef Analyzer_cxx
-Analyzer::Analyzer() : fChain(0) 
+Analyzer::Analyzer(int disc_numofbins) : fChain(0) //konstruktor klase
 {
-	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	mass_signal_histo = new TH1F("masa_signal_histogram", "Higgs mass with event weight included", 50, 70, 170);
-	mass_background_histo = new TH1F("masa_background_histogram", "Higgs mass with event weight included", 50, 70, 170);
-	disc_signal_histo = new TH1F("discriminator_signal_histo", "Kinematic discriminator", 10, 0, 1);
-	disc_background_histo = new TH1F("discriminator_background_histo", "Kinematic discriminator", 10, 0, 1);
+	number_of_bins_for_discriminator = disc_numofbins;
+	//konstruktor za histogram (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
+	mass_signal_histo = new TH1F("masa_signal_histogram", "Signal Higgs mass", 50, 70, 170);
+	mass_background_histo = new TH1F("masa_background_histogram", "Background Higgs mass", 50, 70, 170);
+	disc_signal_histo_10 = new TH1F("discriminator_signal_histo_10", "Normalised kinematic discriminator", 10, 0, 1);
+	disc_background_histo_10 = new TH1F("discriminator_background_histo_10", "Normalised kinematic discriminator", 10, 0, 1);
+	disc_signal_histo = new TH1F("discriminator_signal_histo", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
+	disc_background_histo = new TH1F("discriminator_background_histo", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
 }
 
 Analyzer::~Analyzer()
@@ -1489,7 +1501,7 @@ Long64_t Analyzer::LoadTree(Long64_t entry)
    return centry;
 }
 
-void Analyzer::Init(TTree *tree, TString putanja)
+void Analyzer::Init(TTree *tree, TString putanja) //funkcija za inicijalizaciju novog stabla
 {
    // The Init() function is called when the selector needs to initialize
    // a new tree or chain. Typically here the branch addresses and branch
@@ -1500,6 +1512,7 @@ void Analyzer::Init(TTree *tree, TString putanja)
    // (once per file to be processed).
 
    // Set object pointer
+   //{
    LepPt = 0;
    LepEta = 0;
    LepPhi = 0;
@@ -1584,12 +1597,15 @@ void Analyzer::Init(TTree *tree, TString putanja)
    LHEAssociatedParticlePhi = 0;
    LHEAssociatedParticleMass = 0;
    LHEAssociatedParticleId = 0;
+   //}
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
+   //set branch adress - dodani uvjeti za varijable kojih nema u beckground da se izbjegnu errori
+   //{
    fChain->SetBranchAddress("RunNumber", &RunNumber, &b_RunNumber);
    fChain->SetBranchAddress("EventNumber", &EventNumber, &b_EventNumber);
    fChain->SetBranchAddress("LumiNumber", &LumiNumber, &b_LumiNumber);
@@ -2295,6 +2311,7 @@ void Analyzer::Init(TTree *tree, TString putanja)
    fChain->SetBranchAddress("p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen", &p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen, &b_p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen);
    fChain->SetBranchAddress("p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen", &p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen, &b_p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen);
    }
+   //}
    Notify();
 }
 
