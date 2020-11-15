@@ -1,6 +1,6 @@
 #include "ElementaryParticle.h"
 
-	ElementaryParticle::ElementaryParticle(float m, string name, bool isboson) { //konstruktor
+	ElementaryParticle::ElementaryParticle(float m, string name, bool isboson) {
 	masacestice = m;
 	imecestice = name;
 	ifbozon = isboson;
