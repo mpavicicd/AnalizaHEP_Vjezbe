@@ -23,12 +23,11 @@ class ElementaryParticle {
 int main () {
   ElementaryParticle Higgs(125.09,"Higgsov bozon",true);
   ElementaryParticle topkv(173.1,"top kvark",false);
-  ElementaryParticle Zbozon(80.4,"Z bozon",true);
-  ElementaryParticle *pok;
-  pok = &Zbozon;
+  ElementaryParticle *Zbozon;
+  Zbozon = new ElementaryParticle(80.4,"Z bozon",true);
   Higgs.printInfo();
   topkv.printInfo();
-  pok->printInfo();
-  delete pok;
+  Zbozon->printInfo();
+  delete Zbozon;
   return 0;
 }
