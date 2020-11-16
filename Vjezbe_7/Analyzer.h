@@ -15,6 +15,16 @@
 #include <TString.h>
 #include <TH1F.h>
 
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TAttFill.h>
+#include <TLorentzVector.h>
+#include <THStack.h>
+#include <TMath.h>
+#include <TGraph.h>
+
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 #include "vector"
@@ -1458,6 +1468,8 @@ public :
 		TH1F	*disc_background_histo_10;
 		TH1F	*disc_signal_histo;
 		TH1F	*disc_background_histo;
+		TH2F	*mass_KD_signal_histo;
+		TH2F	*mass_KD_background_histo;
 		int		number_of_bins_for_discriminator;
 };
 
@@ -1467,13 +1479,16 @@ public :
 Analyzer::Analyzer(int disc_numofbins) : fChain(0) //konstruktor klase
 {
 	number_of_bins_for_discriminator = disc_numofbins;
-	//konstruktor za histogram (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
+	//konstruktor za TH1F (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
 	mass_signal_histo = new TH1F("masa_signal_histogram", "Signal Higgs mass", 50, 70, 170);
 	mass_background_histo = new TH1F("masa_background_histogram", "Background Higgs mass", 50, 70, 170);
 	disc_signal_histo_10 = new TH1F("discriminator_signal_histo_10", "Normalised kinematic discriminator", 10, 0, 1);
 	disc_background_histo_10 = new TH1F("discriminator_background_histo_10", "Normalised kinematic discriminator", 10, 0, 1);
 	disc_signal_histo = new TH1F("discriminator_signal_histo", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
 	disc_background_histo = new TH1F("discriminator_background_histo", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
+	//konstruktor za TH2F (name of histogram, histogram title, nbinsx, xlow, xup, nbinsy, ylow, yup)
+	mass_KD_signal_histo = new TH2F("histo_signal", "Mass vs KD", 50, 70., 170., 20, 0., 1.0);
+	mass_KD_background_histo = new TH2F("histo_background", "Mass vs KD", 50, 70., 170., 20, 0., 1.0);
 }
 
 Analyzer::~Analyzer()

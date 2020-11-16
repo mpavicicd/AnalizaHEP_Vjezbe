@@ -1,15 +1,5 @@
 #define Analyzer_cxx
 #include "Analyzer.h"
-#include <TH1F.h>
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
-#include <TLegend.h>
-#include <TAttFill.h>
-#include <TLorentzVector.h>
-#include <THStack.h>
-#include <TMath.h>
-#include <TGraph.h>
 
 void Analyzer::Loop(){ //petlja po svim dogadajima
 //   In a ROOT session, you can do:
@@ -91,27 +81,19 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	TH1F *histo9, *histo10, *histo11, *histo12; //4 histograma za azimutalni kut
 	TH1F *histo13, *histo14, *histo15, *histo16; //4 histograma za BDT rezultat
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
-		histo1 = new TH1F("pt1", "Distribution of decay leptons transverse momentum for signal events", 70, 0, 140);
-		histo5 = new TH1F("eta1", "Distribution of decay leptons pseudorapidity for signal events", 60, -3, 3);
-		histo9 = new TH1F("phi1", "Distribution of decay leptons azimuthal angle for signal events", 70, -3.5, 3.5);
-		histo13 = new TH1F("bdt1", "Distribution of decay leptons BDT result for signal events", 110, -1, 10);
-	}
-	else{
-		histo1 = new TH1F("pt1", "Distribution of decay leptons transverse momentum for background events", 70, 0, 140);
-		histo5 = new TH1F("eta1", "Distribution of decay leptons pseudorapidity for background events", 60, -3, 3);
-		histo9 = new TH1F("phi1", "Distribution of decay leptons azimuthal angle for background events", 70, -3.5, 3.5);
-		histo13 = new TH1F("bdt1", "Distribution of decay leptons BDT result for background events", 110, -1, 10);
-	}
+	histo1 = new TH1F("pt1", "", 70, 0, 140);
 	histo2 = new TH1F("pt2", "", 70, 0, 140);
 	histo3 = new TH1F("pt3", "", 70, 0, 140);
 	histo4 = new TH1F("pt4", "", 70, 0, 140);
+	histo5 = new TH1F("eta1", "", 60, -3, 3);
 	histo6 = new TH1F("eta2", "", 60, -3, 3);
 	histo7 = new TH1F("eta3", "", 60, -3, 3);
 	histo8 = new TH1F("eta4", "", 60, -3, 3);
+	histo9 = new TH1F("phi1", "", 70, -3.5, 3.5);
 	histo10 = new TH1F("phi2", "", 70, -3.5, 3.5);
 	histo11 = new TH1F("phi3", "", 70, -3.5, 3.5);
 	histo12 = new TH1F("phi4", "", 70, -3.5, 3.5);
+	histo13 = new TH1F("bdt1", "", 110, -1, 10);
 	histo14 = new TH1F("bdt2", "", 110, -1, 10);
 	histo15 = new TH1F("bdt3", "", 110, -1, 10);
 	histo16 = new TH1F("bdt4", "", 110, -1, 10);
@@ -151,18 +133,19 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 		*Z1 = *lep1 + *lep2;
 		*Z2 = *lep3 + *lep4;
 		*Higgs = *Z1 + *Z2;
-		weight = (L*xsec*1000*overallEventWeight)/(h1->GetBinContent(40));
 		if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
 			mass_signal_histo->Fill(Higgs->M(),weight);
 			diskr = pow((1+((csig* p_QQB_BKG_MCFM)/p_GG_SIG_ghg2_1_ghz1_1_JHUGen)),-1);
 			disc_signal_histo_10->Fill(diskr,weight);
 			disc_signal_histo->Fill(diskr,weight);
+			mass_KD_signal_histo->Fill(Higgs->M(), diskr, weight);
 		}
 		else{
 			mass_background_histo->Fill(Higgs->M(),weight);
 			diskr = pow((1+((cback* p_QQB_BKG_MCFM)/p_GG_SIG_ghg2_1_ghz1_1_JHUGen)),-1);
 			disc_background_histo_10->Fill(diskr,weight);
 			disc_background_histo->Fill(diskr,weight);
+			mass_KD_background_histo->Fill(Higgs->M(), diskr, weight);
 		}
    }
 	//}
@@ -178,10 +161,14 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	histo1->SetFillStyle(1001); //postavlja stil ispune
 	histo1->SetFillColor(kBlue+1);//postavlja boju ispune
 	histo4->SetFillColorAlpha(kGreen+2,0.35);
-	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root")
+	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
 		histo1->SetMaximum(30); //postavljanje yrange
-	else
+		histo1->SetTitle("Transverse momentum for gluon-gluon fusion");
+	}
+	else{
 		histo1->SetMaximum(200);
+		histo1->SetTitle("Transverse momentum for q #bar{q} #rightarrow ZZ");
+	}
 	
 	histo5->GetXaxis()->SetTitle("#eta");
 	histo5->GetYaxis()->SetTitle("Events / 0.1");
@@ -192,10 +179,14 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	histo5->SetFillStyle(1001);
 	histo5->SetFillColor(kBlue+1);
 	histo8->SetFillColorAlpha(kGreen+2,0.35);
-	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root")
+	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
 		histo5->SetMaximum(10);
-	else
+		histo5->SetTitle("Pseudorapidity for gluon-gluon fusion");
+	}
+	else{
 		histo5->SetMaximum(150);
+		histo5->SetTitle("Pseudorapidity for q #bar{q} #rightarrow ZZ");
+	}
 	
 	histo9->GetXaxis()->SetTitle("#phi [rad]");
 	histo9->GetYaxis()->SetTitle("Events / 0.1");
@@ -206,10 +197,14 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	histo9->SetFillStyle(1001);
 	histo9->SetFillColor(kBlue+1);
 	histo12->SetFillColorAlpha(kGreen+2,0.35);
-	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root")
+	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
 		histo9->SetMaximum(6);
-	else
+		histo9->SetTitle("Azimuthal angle for gluon-gluon fusion");
+	}
+	else{
 		histo9->SetMaximum(100);
+		histo9->SetTitle("Azimuthal angle for q #bar{q} #rightarrow ZZ");
+	}
 	
 	histo13->GetXaxis()->SetTitle("BDT");
 	histo13->GetYaxis()->SetTitle("Events / 0.1");
@@ -220,10 +215,14 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	histo13->SetFillStyle(1001);
 	histo13->SetFillColor(kBlue+1);
 	histo16->SetFillColorAlpha(kGreen+2,0.35);
-	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root")
+	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
 		histo13->SetMaximum(100);
-	else
+		histo13->SetTitle("BDT result for gluon-gluon fusion");
+	}
+	else{
 		histo13->SetMaximum(1600);
+		histo13->SetTitle(" BDT result for q #bar{q} #rightarrow ZZ");
+	}
 	//}
 	
 	gStyle->SetOptStat(0); //uklanja statisticki opis
@@ -244,22 +243,22 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	leg3->SetTextSize(.035);
 	leg4->SetTextSize(.035);
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	leg1->AddEntry(histo1, "1st decay lepton", "l");
-	leg1->AddEntry(histo2, "2nd decay lepton", "l");
-	leg1->AddEntry(histo3, "3rd decay lepton", "l");
-	leg1->AddEntry(histo4, "4th decay lepton", "l");
-	leg2->AddEntry(histo5, "1st decay lepton", "l");
-	leg2->AddEntry(histo6, "2nd decay lepton", "l");
-	leg2->AddEntry(histo7, "3rd decay lepton", "l");
-	leg2->AddEntry(histo8, "4th decay lepton", "l");
-	leg3->AddEntry(histo9, "1st decay lepton", "l");
-	leg3->AddEntry(histo10, "2nd decay lepton", "l");
-	leg3->AddEntry(histo11, "3rd decay lepton", "l");
-	leg3->AddEntry(histo12, "4th decay lepton", "l");
-	leg4->AddEntry(histo13, "1st decay lepton", "l");
-	leg4->AddEntry(histo14, "2nd decay lepton", "l");
-	leg4->AddEntry(histo15, "3rd decay lepton", "l");
-	leg4->AddEntry(histo16, "4th decay lepton", "l");
+	leg1->AddEntry(histo1, "1st decay lepton", "f");
+	leg1->AddEntry(histo2, "2nd decay lepton", "f");
+	leg1->AddEntry(histo3, "3rd decay lepton", "f");
+	leg1->AddEntry(histo4, "4th decay lepton", "f");
+	leg2->AddEntry(histo5, "1st decay lepton", "f");
+	leg2->AddEntry(histo6, "2nd decay lepton", "f");
+	leg2->AddEntry(histo7, "3rd decay lepton", "f");
+	leg2->AddEntry(histo8, "4th decay lepton", "f");
+	leg3->AddEntry(histo9, "1st decay lepton", "f");
+	leg3->AddEntry(histo10, "2nd decay lepton", "f");
+	leg3->AddEntry(histo11, "3rd decay lepton", "f");
+	leg3->AddEntry(histo12, "4th decay lepton", "f");
+	leg4->AddEntry(histo13, "1st decay lepton", "f");
+	leg4->AddEntry(histo14, "2nd decay lepton", "f");
+	leg4->AddEntry(histo15, "3rd decay lepton", "f");
+	leg4->AddEntry(histo16, "4th decay lepton", "f");
 	//}
 	
 	/*inicijalizacija platna, crtanje i spremanje u pdf*/
@@ -299,10 +298,16 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	histo16->Draw("HISTO same");
 	leg4->Draw();
 	
-	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root")
+	if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
 		canv->SaveAs("Histogram_Z1_signal.pdf");
-	else
+		canv->SaveAs("Histogram_Z1_signal.png");
+		canv->SaveAs("Histogram_Z1_signal.root");
+	}
+	else{
 		canv->SaveAs("Histogram_Z1_background.pdf");
+		canv->SaveAs("Histogram_Z1_background.png");
+		canv->SaveAs("Histogram_Z1_background.root");
+	}
 	//}
 	
 	/*brisanje pokazivaca*/
@@ -340,16 +345,18 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 
 void Analyzer::PlotMass(){//funkcija za plot mase
 	THStack *stack;
-	stack = new THStack("stack", "Stacked Higgs mass");
+	stack = new THStack("stack", "Reconstructed four-lepton mass");
 	
 	/*uredivanje svojstava histograma - nazivi osi, boja linije, ispuna, yrange (maximum)*/
 	//{
 	mass_signal_histo->GetXaxis()->SetTitle("m_{4l} [GeV]"); //postavlja oznaku na x-osi
 	mass_signal_histo->GetYaxis()->SetTitle("Events / 2 GeV"); //postavlja oznaku na y-osi
-	mass_signal_histo->SetLineColor(kBlue+1); //postavlja boju linije, alpha - prozirnost
-	mass_background_histo->SetLineColor(kOrange+6);
+	mass_signal_histo->SetLineColor(kOrange+6); //postavlja boju linije, alpha - prozirnost
+	mass_background_histo->SetLineColor(kBlue+1);
 	mass_signal_histo->SetFillStyle(1001); //postavlja stil ispune
-	mass_signal_histo->SetFillColor(kBlue+1);//postavlja boju ispune
+	mass_signal_histo->SetFillColor(kOrange+6);//postavlja boju ispune
+	mass_background_histo->SetFillStyle(1001);
+	mass_background_histo->SetFillColor(kBlue+1);
 	//}
 	
 	gStyle->SetOptStat(0); //uklanja statisticki opis
@@ -365,8 +372,8 @@ void Analyzer::PlotMass(){//funkcija za plot mase
 	leg1 = new TLegend(0.7,0.75,0.9,0.9,"");
 	leg1->SetTextSize(.025); //postavljanje velicine teksta - izrazeno u postotku velicine trenutkog odjeljka
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	leg1->AddEntry(mass_signal_histo, "signal", "l");
-	leg1->AddEntry(mass_background_histo, "background", "l");
+	leg1->AddEntry(mass_signal_histo, "gluon-gluon fusion", "f");
+	leg1->AddEntry(mass_background_histo, "q#bar{q} #rightarrow ZZ", "f");
 	//}
 
 	/*inicijalizacija platna, crtanje i spremanje u pdf*/
@@ -385,6 +392,8 @@ void Analyzer::PlotMass(){//funkcija za plot mase
 	canv->Modified();
 	leg1->Draw();
 	canv->SaveAs("Histogram_Z2.pdf"); //spremi platno kao...
+	canv->SaveAs("Histogram_Z2.png");
+	canv->SaveAs("Histogram_Z2.root");
 	//}
 
 	/*brisanje pokazivaca*/
@@ -399,7 +408,7 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	Double_t x[number_of_bins_for_discriminator], y[number_of_bins_for_discriminator];
 	/*uredivanje svojstava histograma - nazivi osi, boja linije, ispuna, yrange (maximum)*/
 	//{
-	disc_signal_histo_10->GetXaxis()->SetTitle("Kinematic discriminator");
+	disc_signal_histo_10->GetXaxis()->SetTitle("D^{kin}");
 	disc_signal_histo_10->GetYaxis()->SetTitle("Events / 0.1");
 	disc_signal_histo_10->SetLineColor(kBlue+1);
 	disc_background_histo_10->SetLineColor(kOrange+6);
@@ -414,35 +423,34 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	TLegend *leg1;
 	leg1 = new TLegend(0.1,0.8,0.4,0.9,"");
 	leg1->SetTextSize(.025);
-	leg1->AddEntry(disc_signal_histo_10, "signal", "l");
-	leg1->AddEntry(disc_background_histo_10, "background", "l");
+	leg1->AddEntry(disc_signal_histo_10, "gluon-gluon fusion", "f");
+	leg1->AddEntry(disc_background_histo_10, "q#bar{q} #rightarrow ZZ", "f");
 	//}
 
 	/*normalizacija*/
 	//{
-	Double_t factor = 1.;
-	disc_signal_histo_10->Scale(factor/disc_signal_histo->Integral());
-	disc_background_histo_10->Scale(factor/disc_background_histo->Integral());
-	disc_signal_histo->Scale(factor/disc_signal_histo->Integral());
-	disc_background_histo->Scale(factor/disc_background_histo->Integral());
+	disc_signal_histo_10->Scale(1./disc_signal_histo->Integral());
+	disc_background_histo_10->Scale(1./disc_background_histo->Integral());
+	disc_signal_histo->Scale(1./disc_signal_histo->Integral());
+	disc_background_histo->Scale(1./disc_background_histo->Integral());
 	//}
 
 	/*Receiver operating characteristic (ROC)*/
 	//{
-
+	TGraph* ROC = new TGraph();
 	for(int i=1;i<=number_of_bins_for_discriminator;i++){
-		x[i] = disc_background_histo->Integral(1,i);
-		y[i] = disc_signal_histo->Integral(1,i);
-		//cout << i << ". bin: x = " << x[i] << " , y = " << y[i] << endl;
+		float x = 1. - disc_background_histo->Integral(1,i);
+		float y = 1. - disc_signal_histo->Integral(1,i);
+		//cout << i << ". bin: x = " << x << " , y = " << y << endl;
+		if ( x > 0.001 && y > 0.001 && x < 1.0 && y < 1.0) ROC->SetPoint(int(i),x,y);
 	}
-	TGraph* gr = new TGraph(number_of_bins_for_discriminator,x,y);
 	//}
 
 	/*inicijalizacija platna, crtanje i spremanje u pdf*/
 	//{
 	TCanvas *canv;
-	canv = new TCanvas("canvas for discriminator","Profile histogram example",200, 10,700,500);
-	canv->Divide(2); //podjela platna na 2 stupca
+	canv = new TCanvas("canvas for discriminator and ROC","Profile histogram example",200, 10,700,500);
+	canv->Divide(2,2); //podjela platna na 2 stupca
 	
 	canv->cd(1); //postavljanje prvog odjeljka ("pad") kao aktivnog
 	disc_signal_histo_10->Draw("HISTO"); //nacrtaj histogram na danom platnu
@@ -450,19 +458,44 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	leg1->Draw();
 	
 	canv->cd(2);
-	gr->SetTitle("Receiver operating characteristic");
-	gr->GetXaxis()->SetTitle("percent of background events");
-	gr->GetYaxis()->SetTitle("percent of signal events");
-	//gr->GetXaxis()->SetRangeUser(0.8,1.1);
-	gr->Draw("AP");
+	gPad->SetLeftMargin(0.15);
+	ROC->SetTitle("Receiver operating characteristic");
+	ROC->GetXaxis()->SetTitle("Background efficiency");
+	ROC->GetYaxis()->SetTitle("Signal efficiency");
+	ROC->SetMinimum(0.95);
+	ROC->SetMaximum(1.0);
+	ROC->GetXaxis()->SetLimits(0.00,0.05);
+	ROC->SetMarkerStyle(20);
+	ROC->SetMarkerSize(0.4);
+	ROC->Draw("AP");
 	
-	canv->SaveAs("Histogram_Z4.pdf"); //spremi platno kao...
+	canv->cd(3);
+	mass_KD_background_histo->Draw("COLZ");
+	//COLZ - opcija za draw koja crta i paletu boja
+	//vise na https://root.cern/doc/master/classTHistPainter.html -> Options supported for 2D histograms 
+	mass_KD_background_histo->SetStats(0);
+	mass_KD_background_histo->SetTitle("m_{4l} vs D^{kin} for q #bar{q} #rightarrow ZZ");
+	mass_KD_background_histo->GetXaxis()->SetTitle("m_{4l} [GeV]");
+	mass_KD_background_histo->GetYaxis()->SetTitle("D^{kin}");
+	
+	canv->cd(4);
+	mass_KD_signal_histo->Draw("COLZ");
+	//COLZ - opcija za draw koja crta i paletu boja
+	//vise na https://root.cern/doc/master/classTHistPainter.html -> Options supported for 2D histograms 
+	mass_KD_signal_histo->SetStats(0);
+	mass_KD_signal_histo->SetTitle("m_{4l} vs D^{kin} for gluon-gluon fusion");
+	mass_KD_signal_histo->GetXaxis()->SetTitle("m_{4l} [GeV]");
+	mass_KD_signal_histo->GetYaxis()->SetTitle("D^{kin}");
+	
+	canv->SaveAs("Histogram_Z5.pdf");
+	canv->SaveAs("Histogram_Z5.png");
+	canv->SaveAs("Histogram_Z5.root");
 	//}
 	
 	/*brisanje pokazivaca*/
 	//{
 	delete leg1;
 	delete canv;
-	delete gr;
+	delete ROC;
 	//}
 }
