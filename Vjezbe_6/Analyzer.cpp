@@ -1,12 +1,5 @@
 #define Analyzer_cxx
 #include "Analyzer.h"
-#include <TH1F.h>
-#include <TH2.h>
-#include <TStyle.h>
-#include <TCanvas.h>
-#include <TLegend.h>
-#include <TAttFill.h>
-#include <TLorentzVector.h>
 
 void Analyzer::Loop()
 {
@@ -55,22 +48,22 @@ void Analyzer::PlotHistogram(){
 	TH1F *histo9, *histo10, *histo11, *histo12; //4 histograma za azimutalni kut
 	TH1F *histo13, *histo14, *histo15, *histo16; //4 histograma za BDT rezultat
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Decay leptons transverse momentum with event weight included", 70, 0, 140);
-	histo2 = new TH1F("Histogram", "", 70, 0, 140);
-	histo3 = new TH1F("Histogram", "", 70, 0, 140);
-	histo4 = new TH1F("Histogram", "", 70, 0, 140);
-	histo5 = new TH1F("Histogram", "Decay leptons pseudorapidity with event weight included", 60, -3, 3);
-	histo6 = new TH1F("Histogram", "", 60, -3, 3);
-	histo7 = new TH1F("Histogram", "", 60, -3, 3);
-	histo8 = new TH1F("Histogram", "", 60, -3, 3);
-	histo9 = new TH1F("Histogram", "Decay leptons azimuthal angle with event weight included", 70, -3.5, 3.5);
-	histo10 = new TH1F("Histogram", "", 70, -3.5, 3.5);
-	histo11 = new TH1F("Histogram", "", 70, -3.5, 3.5);
-	histo12 = new TH1F("Histogram", "", 70, -3.5, 3.5);
-	histo13 = new TH1F("Histogram", "Decay leptons BDT result with event weight included", 110, -1, 10);
-	histo14 = new TH1F("Histogram", "", 110, -1, 10);
-	histo15 = new TH1F("Histogram", "", 110, -1, 10);
-	histo16 = new TH1F("Histogram", "", 110, -1, 10);
+	histo1 = new TH1F("Histogram_pt1", "Decay leptons transverse momentum with event weight included", 70, 0, 140);
+	histo2 = new TH1F("Histogram_pt2", "", 70, 0, 140);
+	histo3 = new TH1F("Histogram_pt3", "", 70, 0, 140);
+	histo4 = new TH1F("Histogram_pt4", "", 70, 0, 140);
+	histo5 = new TH1F("Histogram_eta1", "Decay leptons pseudorapidity with event weight included", 60, -3, 3);
+	histo6 = new TH1F("Histogram_eta2", "", 60, -3, 3);
+	histo7 = new TH1F("Histogram_eta3", "", 60, -3, 3);
+	histo8 = new TH1F("Histogram_eta4", "", 60, -3, 3);
+	histo9 = new TH1F("Histogram_psi1", "Decay leptons azimuthal angle with event weight included", 70, -3.5, 3.5);
+	histo10 = new TH1F("Histogram_psi2", "", 70, -3.5, 3.5);
+	histo11 = new TH1F("Histogram_psi3", "", 70, -3.5, 3.5);
+	histo12 = new TH1F("Histogram_psi4", "", 70, -3.5, 3.5);
+	histo13 = new TH1F("Histogram_BDT1", "Decay leptons BDT result with event weight included", 110, -1, 10);
+	histo14 = new TH1F("Histogram_BDT2", "", 110, -1, 10);
+	histo15 = new TH1F("Histogram_BDT3", "", 110, -1, 10);
+	histo16 = new TH1F("Histogram_BDT4", "", 110, -1, 10);
 	
 	//petlja koja puni histogram podacima
 	if (fChain == 0) return;
@@ -161,22 +154,22 @@ void Analyzer::PlotHistogram(){
 	leg3->SetTextSize(.035);
 	leg4->SetTextSize(.035);
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	leg1->AddEntry(histo1, "1st decay lepton", "l");
-	leg1->AddEntry(histo2, "2nd decay lepton", "l");
-	leg1->AddEntry(histo3, "3rd decay lepton", "l");
-	leg1->AddEntry(histo4, "4th decay lepton", "l");
-	leg2->AddEntry(histo5, "1st decay lepton", "l");
-	leg2->AddEntry(histo6, "2nd decay lepton", "l");
-	leg2->AddEntry(histo7, "3rd decay lepton", "l");
-	leg2->AddEntry(histo8, "4th decay lepton", "l");
-	leg3->AddEntry(histo9, "1st decay lepton", "l");
-	leg3->AddEntry(histo10, "2nd decay lepton", "l");
-	leg3->AddEntry(histo11, "3rd decay lepton", "l");
-	leg3->AddEntry(histo12, "4th decay lepton", "l");
-	leg4->AddEntry(histo13, "1st decay lepton", "l");
-	leg4->AddEntry(histo14, "2nd decay lepton", "l");
-	leg4->AddEntry(histo15, "3rd decay lepton", "l");
-	leg4->AddEntry(histo16, "4th decay lepton", "l");
+	leg1->AddEntry(histo1, "1st decay lepton", "f");
+	leg1->AddEntry(histo2, "2nd decay lepton", "f");
+	leg1->AddEntry(histo3, "3rd decay lepton", "f");
+	leg1->AddEntry(histo4, "4th decay lepton", "f");
+	leg2->AddEntry(histo5, "1st decay lepton", "f");
+	leg2->AddEntry(histo6, "2nd decay lepton", "f");
+	leg2->AddEntry(histo7, "3rd decay lepton", "f");
+	leg2->AddEntry(histo8, "4th decay lepton", "f");
+	leg3->AddEntry(histo9, "1st decay lepton", "f");
+	leg3->AddEntry(histo10, "2nd decay lepton", "f");
+	leg3->AddEntry(histo11, "3rd decay lepton", "f");
+	leg3->AddEntry(histo12, "4th decay lepton", "f");
+	leg4->AddEntry(histo13, "1st decay lepton", "f");
+	leg4->AddEntry(histo14, "2nd decay lepton", "f");
+	leg4->AddEntry(histo15, "3rd decay lepton", "f");
+	leg4->AddEntry(histo16, "4th decay lepton", "f");
 	TCanvas *canv; //stvaranje platna
 	//pozivanje konstruktora za platno
 	/*(const char* name, const char* title, Int_t wtopx, Int_t wtopy, Int_t ww, Int_t wh)
@@ -217,6 +210,8 @@ void Analyzer::PlotHistogram(){
 	leg4->Draw();
 	
 	canv->SaveAs("Histogram_Z4_leptons.pdf"); //spremi platno kao...
+	canv->SaveAs("Histogram_Z4_leptons.png");
+	canv->SaveAs("Histogram_Z4_leptons.root");
 	
 	delete histo1; //brisanje pokazivaca
 	delete histo2;
@@ -261,7 +256,7 @@ void Analyzer::HiggsKonstr(){
 	Higgs = new TLorentzVector();
 	TH1F *histo1;
 	//pozivanje konstruktora (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	histo1 = new TH1F("Histogram", "Higgs mass with event weight included", 25, 90, 140);
+	histo1 = new TH1F("Histogram", "Reconstructed four-lepton mass with event weight included", 25, 90, 140);
 
 	/*postavke izgleda histograma*/
 	histo1->SetLineColor(kBlue+1); //postavlja boju linije, alpha - prozirnost
@@ -280,7 +275,7 @@ void Analyzer::HiggsKonstr(){
 	leg1 = new TLegend(0.1,0.83,0.7,0.9,"");
 	leg1->SetTextSize(.025); //postavljanje velicine teksta - izrazeno u postotku velicine trenutkog odjeljka
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	leg1->AddEntry(histo1, "Reconstructed Higgs boson", "l");
+	leg1->AddEntry(histo1, "gluon-gluon fusion", "f");
 
 	if (fChain == 0) return;
 	Long64_t nentries = fChain->GetEntriesFast();
@@ -316,8 +311,8 @@ void Analyzer::HiggsKonstr(){
 	histo1->Draw("HISTO"); //nacrtaj histogram na danom platnu
 	leg1->Draw();
 	canv->SaveAs("Histogram_Z4_Higgs.pdf"); //spremi platno kao...
-	//cout << "Povrsina:" << histo1->Integral();
-	
+	canv->SaveAs("Histogram_Z4_Higgs.png");
+	canv->SaveAs("Histogram_Z4_Higgs.root");
 	delete histo1; //brisanje pokazivaca
 	delete lep1;
 	delete lep2;

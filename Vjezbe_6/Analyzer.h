@@ -15,6 +15,13 @@
 #include <TString.h>
 #include <TH1F.h>
 
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TAttFill.h>
+#include <TLorentzVector.h>
+
 // Header file for the classes stored in the TTree if any.
 #include "vector"
 #include "vector"
