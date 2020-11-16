@@ -14,6 +14,13 @@
 #include <TFile.h>
 #include <TString.h>
 
+#include <TH1F.h>
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TLorentzVector.h>
+
 // Header file for the classes stored in the TTree if any.
 using namespace std;
 
@@ -25,40 +32,40 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
-   string          *Ime1;
-   Double_t        Masa1;
-   Bool_t          IfBozon1;
+   string          *Name1;
+   Double_t        Mass1;
+   Bool_t          IfBoson1;
    Double_t        En1;
-   Double_t        Px1;
-   Double_t        Py1;
-   Double_t        Pz1;
-   Double_t        Pt1;
-   string          *Ime2;
-   Double_t        Masa2;
-   Bool_t          IfBozon2;
+   Double_t        px1;
+   Double_t        py1;
+   Double_t        pz1;
+   Double_t        pT1;
+   string          *Name2;
+   Double_t        Mass2;
+   Bool_t          IfBoson2;
    Double_t        En2;
-   Double_t        Px2;
-   Double_t        Py2;
-   Double_t        Pz2;
-   Double_t        Pt2;
+   Double_t        px2;
+   Double_t        py2;
+   Double_t        pz2;
+   Double_t        pT2;
 
    // List of branches
-   TBranch        *b_Ime1;   //!
-   TBranch        *b_Masa1;   //!
-   TBranch        *b_IfBozon1;   //!
+   TBranch        *b_Name1;   //!
+   TBranch        *b_Mass1;   //!
+   TBranch        *b_IfBoson1;   //!
    TBranch        *b_En1;   //!
-   TBranch        *b_Px1;   //!
-   TBranch        *b_Py1;   //!
-   TBranch        *b_Pz1;   //!
-   TBranch        *b_Pt1;   //!
-   TBranch        *b_Ime2;   //!
-   TBranch        *b_Masa2;   //!
-   TBranch        *b_IfBozon2;   //!
+   TBranch        *b_px1;   //!
+   TBranch        *b_py1;   //!
+   TBranch        *b_pz1;   //!
+   TBranch        *b_pT1;   //!
+   TBranch        *b_Name2;   //!
+   TBranch        *b_Mass2;   //!
+   TBranch        *b_IfBoson2;   //!
    TBranch        *b_En2;   //!
-   TBranch        *b_Px2;   //!
-   TBranch        *b_Py2;   //!
-   TBranch        *b_Pz2;   //!
-   TBranch        *b_Pt2;   //!
+   TBranch        *b_px2;   //!
+   TBranch        *b_py2;   //!
+   TBranch        *b_pz2;   //!
+   TBranch        *b_pT2;   //!
 
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
@@ -127,30 +134,30 @@ void Analyzer::Init(TTree *tree)
    // (once per file to be processed).
 
    // Set object pointer
-   Ime1 = 0;
-   Ime2 = 0;
+   Name1 = 0;
+   Name2 = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Ime1", &Ime1, &b_Ime1);
-   fChain->SetBranchAddress("Masa1", &Masa1, &b_Masa1);
-   fChain->SetBranchAddress("IfBozon1", &IfBozon1, &b_IfBozon1);
+   fChain->SetBranchAddress("Name1", &Name1, &b_Name1);
+   fChain->SetBranchAddress("Mass1", &Mass1, &b_Mass1);
+   fChain->SetBranchAddress("IfBoson1", &IfBoson1, &b_IfBoson1);
    fChain->SetBranchAddress("En1", &En1, &b_En1);
-   fChain->SetBranchAddress("Px1", &Px1, &b_Px1);
-   fChain->SetBranchAddress("Py1", &Py1, &b_Py1);
-   fChain->SetBranchAddress("Pz1", &Pz1, &b_Pz1);
-   fChain->SetBranchAddress("Pt1", &Pt1, &b_Pt1);
-   fChain->SetBranchAddress("Ime2", &Ime2, &b_Ime2);
-   fChain->SetBranchAddress("Masa2", &Masa2, &b_Masa2);
-   fChain->SetBranchAddress("IfBozon2", &IfBozon2, &b_IfBozon2);
+   fChain->SetBranchAddress("px1", &px1, &b_px1);
+   fChain->SetBranchAddress("py1", &py1, &b_py1);
+   fChain->SetBranchAddress("pz1", &pz1, &b_pz1);
+   fChain->SetBranchAddress("pT1", &pT1, &b_pT1);
+   fChain->SetBranchAddress("Name2", &Name2, &b_Name2);
+   fChain->SetBranchAddress("Mass2", &Mass2, &b_Mass2);
+   fChain->SetBranchAddress("IfBoson2", &IfBoson2, &b_IfBoson2);
    fChain->SetBranchAddress("En2", &En2, &b_En2);
-   fChain->SetBranchAddress("Px2", &Px2, &b_Px2);
-   fChain->SetBranchAddress("Py2", &Py2, &b_Py2);
-   fChain->SetBranchAddress("Pz2", &Pz2, &b_Pz2);
-   fChain->SetBranchAddress("Pt2", &Pt2, &b_Pt2);
+   fChain->SetBranchAddress("px2", &px2, &b_px2);
+   fChain->SetBranchAddress("py2", &py2, &b_py2);
+   fChain->SetBranchAddress("pz2", &pz2, &b_pz2);
+   fChain->SetBranchAddress("pT2", &pT2, &b_pT2);
    Notify();
 }
 
