@@ -63,7 +63,7 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("Zadatak1.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/home/public/mpdonkic/Vjezbe/Kolokvij_1/Zadatak_1/Zadatak1.root");
       if (!f || !f->IsOpen()) {
          f = new TFile("Zadatak1.root");
       }
