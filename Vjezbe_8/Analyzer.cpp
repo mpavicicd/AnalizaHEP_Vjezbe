@@ -555,7 +555,7 @@ void Analyzer::DefaultFit(){
 	
 	h1_mass_s_plus_b->GetXaxis()->SetTitle("m_{4l} [GeV]"); 
 	h1_mass_s_plus_b->GetYaxis()->SetTitle("Events / 2 GeV");
-	h1_mass_s_plus_b->SetTitle("Sum of gg #rightarrow ZZ and q  #bar{q} #rightarrow ZZ events");
+	h1_mass_s_plus_b->SetTitle("Sum of gg #rightarrow ZZ and q #bar{q} #rightarrow ZZ events");
 	gStyle->SetOptFit();
 	
 	/*legenda*/
@@ -626,7 +626,7 @@ void Analyzer::MaximumLikelihoodFit(){
 	
 	h1_mass_s_plus_b_2->GetXaxis()->SetTitle("m_{4l} [GeV]"); 
 	h1_mass_s_plus_b_2->GetYaxis()->SetTitle("Events / 2 GeV");
-	h1_mass_s_plus_b_2->SetTitle("Sum of gg #rightarrow ZZ and q  #bar{q} #rightarrow ZZ events");
+	h1_mass_s_plus_b_2->SetTitle("Sum of gg #rightarrow ZZ and q #bar{q} #rightarrow ZZ events");
 	gStyle->SetOptFit();
 	
 	TCanvas *canv; //stvaranje platna
