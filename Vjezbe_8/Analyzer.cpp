@@ -72,7 +72,7 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	Init(tree, putanja);
 	//}
 	
-	h1 = (TH1F*)f->Get("ZZTree/Counters"); //histogram u kojem se nalazi event weights
+	h1_event_weights = (TH1F*)f->Get("ZZTree/Counters"); //histogram u kojem se nalazi event weights
 	
 	/*inicijalizacija i konstruktor histograma za distribuciju - ostali su u .h*/
 	//{
@@ -108,7 +108,7 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 		Long64_t ientry = LoadTree(jentry);
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
-		weight = (L*xsec*1000*overallEventWeight)/(h1->GetBinContent(40));
+		weight = (L*xsec*1000*overallEventWeight)/(h1_event_weights->GetBinContent(40));
 		/*histo1->Fill(LepPt->at(0),weight);
 		histo2->Fill(LepPt->at(1),weight);
 		histo3->Fill(LepPt->at(2),weight);
@@ -134,18 +134,18 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 		*Z2 = *lep3 + *lep4;
 		*Higgs = *Z1 + *Z2;
 		if(putanja == "/home/public/data/ggH125/ZZ4lAnalysis.root"){
-			mass_signal_histo->Fill(Higgs->M(),weight);
+			h1_mass_signal->Fill(Higgs->M(),weight);
 			/*diskr = pow((1+((csig* p_QQB_BKG_MCFM)/p_GG_SIG_ghg2_1_ghz1_1_JHUGen)),-1);
-			disc_signal_histo_10->Fill(diskr,weight);
-			disc_signal_histo->Fill(diskr,weight);
-			mass_KD_signal_histo->Fill(Higgs->M(), diskr, weight);*/
+			h1_disc_signal_10->Fill(diskr,weight);
+			h1_disc_signal->Fill(diskr,weight);
+			h2_mass_KD_signal->Fill(Higgs->M(), diskr, weight);*/
 		}
 		else{
-			mass_background_histo->Fill(Higgs->M(),weight);
+			h1_mass_back->Fill(Higgs->M(),weight);
 			/*diskr = pow((1+((cback* p_QQB_BKG_MCFM)/p_GG_SIG_ghg2_1_ghz1_1_JHUGen)),-1);
-			disc_background_histo_10->Fill(diskr,weight);
-			disc_background_histo->Fill(diskr,weight);
-			mass_KD_background_histo->Fill(Higgs->M(), diskr, weight);*/
+			h1_disc_back_10->Fill(diskr,weight);
+			h1_disc_back->Fill(diskr,weight);
+			h2_mass_KD_back->Fill(Higgs->M(), diskr, weight);*/
 		}
    }
 	//}
@@ -262,6 +262,7 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	//}
 	
 	/*inicijalizacija platna, crtanje i spremanje u pdf*/
+	//zakomentirano jer ne treba za V8
 	//{
 	/*TCanvas *canv; //stvaranje platna
 	//konstruktor za platno (const char* name, const char* title, Int_t wtopx, Int_t wtopy, Int_t ww, Int_t wh)
@@ -335,6 +336,7 @@ void Analyzer::PlotHistogram(TString putanja){ //funkcija za fill grafova i plot
 	delete histo14;
 	delete histo15;
 	delete histo16;
+	delete h1_event_weights;
 	delete leg1;
 	delete leg2;
 	delete leg3;
@@ -349,14 +351,14 @@ void Analyzer::PlotMass(){//funkcija za plot mase
 	
 	/*uredivanje svojstava histograma - nazivi osi, boja linije, ispuna, yrange (maximum)*/
 	//{
-	mass_signal_histo->GetXaxis()->SetTitle("m_{4l} [GeV]"); //postavlja oznaku na x-osi
-	mass_signal_histo->GetYaxis()->SetTitle("Events / 2 GeV"); //postavlja oznaku na y-osi
-	mass_signal_histo->SetLineColor(kOrange+6); //postavlja boju linije, alpha - prozirnost
-	mass_background_histo->SetLineColor(kBlue+1);
-	mass_signal_histo->SetFillStyle(1001); //postavlja stil ispune
-	mass_signal_histo->SetFillColor(kOrange+6);//postavlja boju ispune
-	mass_background_histo->SetFillStyle(1001);
-	mass_background_histo->SetFillColor(kBlue+1);
+	h1_mass_signal->GetXaxis()->SetTitle("m_{4l} [GeV]"); //postavlja oznaku na x-osi
+	h1_mass_signal->GetYaxis()->SetTitle("Events / 2 GeV"); //postavlja oznaku na y-osi
+	h1_mass_signal->SetLineColor(kOrange+6); //postavlja boju linije, alpha - prozirnost
+	h1_mass_back->SetLineColor(kBlue+1);
+	h1_mass_signal->SetFillStyle(1001); //postavlja stil ispune
+	h1_mass_signal->SetFillColor(kOrange+6);//postavlja boju ispune
+	h1_mass_back->SetFillStyle(1001);
+	h1_mass_back->SetFillColor(kBlue+1);
 	//}
 	
 	gStyle->SetOptStat(0); //uklanja statisticki opis
@@ -372,8 +374,8 @@ void Analyzer::PlotMass(){//funkcija za plot mase
 	leg1 = new TLegend(0.7,0.75,0.9,0.9,"");
 	leg1->SetTextSize(.025); //postavljanje velicine teksta - izrazeno u postotku velicine trenutkog odjeljka
 	//povezivanje legende s histogramom (naziv histograma, labela, opcija)
-	leg1->AddEntry(mass_signal_histo, "gluon-gluon fusion", "f");
-	leg1->AddEntry(mass_background_histo, "q#bar{q} #rightarrow ZZ", "f");
+	leg1->AddEntry(h1_mass_signal, "gg #rightarrow ZZ", "f");
+	leg1->AddEntry(h1_mass_back, "q#bar{q} #rightarrow ZZ", "f");
 	//}
 
 	/*inicijalizacija platna, crtanje i spremanje u pdf*/
@@ -384,8 +386,8 @@ void Analyzer::PlotMass(){//funkcija za plot mase
 	//ww - canvas size in pixels along X;	wh - canvas size in pixels along Y
 	canv = new TCanvas("canvas for mass","Profile histogram example",200, 10,700,500);
 	
-	stack->Add(mass_background_histo);
-	stack->Add(mass_signal_histo);
+	stack->Add(h1_mass_back);
+	stack->Add(h1_mass_signal);
 	stack->Draw("HISTO"); //nacrtaj histogram na danom platnu
 	stack->GetXaxis()->SetTitle("m_{4l} [GeV]"); //postavlja oznaku na x-osi
 	stack->GetYaxis()->SetTitle("Events / 2 GeV"); //postavlja oznaku na y-osi
@@ -408,12 +410,12 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	Double_t x[number_of_bins_for_discriminator], y[number_of_bins_for_discriminator];
 	/*uredivanje svojstava histograma - nazivi osi, boja linije, ispuna, yrange (maximum)*/
 	//{
-	disc_signal_histo_10->GetXaxis()->SetTitle("D^{kin}");
-	disc_signal_histo_10->GetYaxis()->SetTitle("Events / 0.1");
-	disc_signal_histo_10->SetLineColor(kBlue+1);
-	disc_background_histo_10->SetLineColor(kOrange+6);
-	disc_signal_histo_10->SetFillStyle(1001);
-	disc_signal_histo_10->SetFillColor(kBlue+1);
+	h1_disc_signal_10->GetXaxis()->SetTitle("D^{kin}");
+	h1_disc_signal_10->GetYaxis()->SetTitle("Events / 0.1");
+	h1_disc_signal_10->SetLineColor(kBlue+1);
+	h1_disc_back_10->SetLineColor(kOrange+6);
+	h1_disc_signal_10->SetFillStyle(1001);
+	h1_disc_signal_10->SetFillColor(kBlue+1);
 	//}
 
 	gStyle->SetOptStat(0);
@@ -423,24 +425,24 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	TLegend *leg1;
 	leg1 = new TLegend(0.1,0.8,0.4,0.9,"");
 	leg1->SetTextSize(.025);
-	leg1->AddEntry(disc_signal_histo_10, "gluon-gluon fusion", "f");
-	leg1->AddEntry(disc_background_histo_10, "q#bar{q} #rightarrow ZZ", "f");
+	leg1->AddEntry(h1_disc_signal_10, "gg #rightarrow ZZ", "f");
+	leg1->AddEntry(h1_disc_back_10, "q#bar{q} #rightarrow ZZ", "f");
 	//}
 
 	/*normalizacija*/
 	//{
-	disc_signal_histo_10->Scale(1./disc_signal_histo->Integral());
-	disc_background_histo_10->Scale(1./disc_background_histo->Integral());
-	disc_signal_histo->Scale(1./disc_signal_histo->Integral());
-	disc_background_histo->Scale(1./disc_background_histo->Integral());
+	h1_disc_signal_10->Scale(1./h1_disc_signal->Integral());
+	h1_disc_back_10->Scale(1./h1_disc_back->Integral());
+	h1_disc_signal->Scale(1./h1_disc_signal->Integral());
+	h1_disc_back->Scale(1./h1_disc_back->Integral());
 	//}
 
 	/*Receiver operating characteristic (ROC)*/
 	//{
 	TGraph* ROC = new TGraph();
 	for(int i=1;i<=number_of_bins_for_discriminator;i++){
-		float x = 1. - disc_background_histo->Integral(1,i);
-		float y = 1. - disc_signal_histo->Integral(1,i);
+		float x = 1. - h1_disc_back->Integral(1,i);
+		float y = 1. - h1_disc_signal->Integral(1,i);
 		//cout << i << ". bin: x = " << x << " , y = " << y << endl;
 		if ( x > 0.001 && y > 0.001 && x < 1.0 && y < 1.0) ROC->SetPoint(int(i),x,y);
 	}
@@ -453,8 +455,8 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	canv->Divide(2,2); //podjela platna na 2 stupca
 	
 	canv->cd(1); //postavljanje prvog odjeljka ("pad") kao aktivnog
-	disc_signal_histo_10->Draw("HISTO"); //nacrtaj histogram na danom platnu
-	disc_background_histo_10->Draw("HISTO same");
+	h1_disc_signal_10->Draw("HISTO"); //nacrtaj histogram na danom platnu
+	h1_disc_back_10->Draw("HISTO same");
 	leg1->Draw();
 	
 	canv->cd(2);
@@ -470,22 +472,22 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	ROC->Draw("AP");
 	
 	canv->cd(3);
-	mass_KD_background_histo->Draw("COLZ");
+	h2_mass_KD_back->Draw("COLZ");
 	//COLZ - opcija za draw koja crta i paletu boja
 	//vise na https://root.cern/doc/master/classTHistPainter.html -> Options supported for 2D histograms 
-	mass_KD_background_histo->SetStats(0);
-	mass_KD_background_histo->SetTitle("m_{4l} vs D^{kin} for q #bar{q} #rightarrow ZZ");
-	mass_KD_background_histo->GetXaxis()->SetTitle("m_{4l} [GeV]");
-	mass_KD_background_histo->GetYaxis()->SetTitle("D^{kin}");
+	h2_mass_KD_back->SetStats(0);
+	h2_mass_KD_back->SetTitle("m_{4l} vs D^{kin} for q #bar{q} #rightarrow ZZ");
+	h2_mass_KD_back->GetXaxis()->SetTitle("m_{4l} [GeV]");
+	h2_mass_KD_back->GetYaxis()->SetTitle("D^{kin}");
 	
 	canv->cd(4);
-	mass_KD_signal_histo->Draw("COLZ");
+	h2_mass_KD_signal->Draw("COLZ");
 	//COLZ - opcija za draw koja crta i paletu boja
 	//vise na https://root.cern/doc/master/classTHistPainter.html -> Options supported for 2D histograms 
-	mass_KD_signal_histo->SetStats(0);
-	mass_KD_signal_histo->SetTitle("m_{4l} vs D^{kin} for gluon-gluon fusion");
-	mass_KD_signal_histo->GetXaxis()->SetTitle("m_{4l} [GeV]");
-	mass_KD_signal_histo->GetYaxis()->SetTitle("D^{kin}");
+	h2_mass_KD_signal->SetStats(0);
+	h2_mass_KD_signal->SetTitle("m_{4l} vs D^{kin} for gluon-gluon fusion");
+	h2_mass_KD_signal->GetXaxis()->SetTitle("m_{4l} [GeV]");
+	h2_mass_KD_signal->GetYaxis()->SetTitle("D^{kin}");
 	
 	canv->SaveAs("Histogram_Z5.pdf");
 	canv->SaveAs("Histogram_Z5.png");
@@ -500,16 +502,16 @@ void Analyzer::PlotDiscriminator(){ //funkcija za plot diskriminatora
 	//}
 }
 
-void Analyzer::HiggsMassWidth(){
+void Analyzer::DefaultFit(){
 	TF1 *BW = new TF1("BW","([0]*[1])/(pow(x*x-[2]*[2], 2)+0.25*[1]*[1])",110,150);
 	TF1 *Q = new TF1("Q","[0] + [1]*x + [2]*x*x",110,150);
 	TF1 *SUM = new TF1("BW+Q","([0]*[1])/(pow(x*x-[2]*[2], 2)+0.25*[1]*[1]) + [3] + [4]*x + [5]*x*x",110,150);
-	BW->SetParameter(0,2.04149*pow(10,4));
-	BW->SetParameter(1,8.29917*pow(10,2));
-	BW->SetParameter(2,1.24443*pow(10,2));
-	Q->SetParameter(0,5.18024*pow(10,1));
-	Q->SetParameter(1,-6.21294*pow(10,-1));
-	Q->SetParameter(2,2.45079*pow(10,-3));
+	BW->SetParameter(0,2.04149e+04);
+	BW->SetParameter(1,8.29917e+02);
+	BW->SetParameter(2,1.24443e+02);
+	Q->SetParameter(0,5.18024e+01);
+	Q->SetParameter(1,-6.21294e-01);
+	Q->SetParameter(2,2.45079e-03);
 	BW->SetParName(0,"D");
 	BW->SetParName(1,"#Gamma");
 	BW->SetParName(2,"M");
@@ -536,10 +538,10 @@ void Analyzer::HiggsMassWidth(){
 	SUM->SetParName(4,"B");
 	SUM->SetParName(5,"C");
 	
-	sum_sig_back->Add(mass_signal_histo);
-	sum_sig_back->Add(mass_background_histo);
-	sum_sig_back->GetXaxis()->SetRangeUser(110,150);
-	sum_sig_back->Fit(SUM, "0");
+	h1_mass_s_plus_b->Add(h1_mass_signal);
+	h1_mass_s_plus_b->Add(h1_mass_back);
+	h1_mass_s_plus_b->GetXaxis()->SetRangeUser(110,150);
+	h1_mass_s_plus_b->Fit(SUM, "0");
 	
 	SUM->SetTitle("Fit functions");
 	BW->SetLineColor(kGreen);
@@ -551,19 +553,19 @@ void Analyzer::HiggsMassWidth(){
 	SUM->GetXaxis()->SetTitle("x"); 
 	SUM->GetYaxis()->SetTitle("f(x)");
 	
-	sum_sig_back->GetXaxis()->SetTitle("m_{4l} [GeV]"); 
-	sum_sig_back->GetYaxis()->SetTitle("Events / 2 GeV");
-	sum_sig_back->SetTitle("Sum of gluon-gluon fusion and q  #bar{q} #rightarrow ZZ events");
+	h1_mass_s_plus_b->GetXaxis()->SetTitle("m_{4l} [GeV]"); 
+	h1_mass_s_plus_b->GetYaxis()->SetTitle("Events / 2 GeV");
+	h1_mass_s_plus_b->SetTitle("Sum of gg #rightarrow ZZ and q  #bar{q} #rightarrow ZZ events");
 	gStyle->SetOptFit();
 	
 	/*legenda*/
 	//{
 	TLegend *leg1;
-	leg1 = new TLegend(0.6,0.75,0.9,0.9,"");
+	leg1 = new TLegend(0.5,0.75,0.9,0.9,"");
 	leg1->SetTextSize(.035);
-	leg1->AddEntry(BW, "Breit-Wigner", "l");
-	leg1->AddEntry(Q, "Square", "l");
-	leg1->AddEntry(SUM, "Sum", "l");
+	leg1->AddEntry(BW, "signal - B-W", "l");
+	leg1->AddEntry(Q, "background - Q", "l");
+	leg1->AddEntry(SUM, "signal+background", "l");
 	//}
 	
 	/*inicijalizacija platna, crtanje i spremanje u pdf*/
@@ -581,7 +583,7 @@ void Analyzer::HiggsMassWidth(){
 	
 	canv->cd(2);
 	gPad->SetLeftMargin(0.15);
-	sum_sig_back->Draw("PE1X0");
+	h1_mass_s_plus_b->Draw("PE1X0");
 	canv->SaveAs("Z1.pdf"); //spremi platno kao...
 	canv->SaveAs("Z1.png");
 	canv->SaveAs("Z1.root");
@@ -592,7 +594,53 @@ void Analyzer::HiggsMassWidth(){
 	delete BW;
 	delete Q;
 	delete SUM;
-	delete sum_sig_back;
+	delete h1_mass_s_plus_b;
+	delete canv;
+	//}
+}
+
+void Analyzer::MaximumLikelihoodFit(){
+	TF1 *FIT = new TF1("BW+Q+BW","([0]*[1])/(pow(x*x-[2]*[2], 2)+0.25*[1]*[1]) + [6]+[7]*x+[8]*x*x + ([3]*[4])/(pow(x*x-[5]*[5], 2)+0.25*[4]*[4])",110,150);
+	FIT->SetParName(0,"D_{q#bar{q}#rightarrowZZ}");
+	FIT->SetParameter(0,1e+04);
+	FIT->SetParName(1,"#Gamma_{q#bar{q} #rightarrowZZ}");
+	FIT->SetParameter(1,800);
+	FIT->SetParName(2,"M_{q#bar{q}#rightarrowZZ}");
+	FIT->SetParameter(2,90);
+	FIT->SetParName(3,"D_{gg#rightarrowZZ}");
+	FIT->SetParameter(3,1e+04);
+	FIT->SetParName(4,"#Gamma_{gg#rightarrowZZ}");
+	FIT->SetParameter(4,900);
+	FIT->SetParName(5,"M_{gg#rightarrowZZ}");
+	FIT->SetParameter(5,125);
+	FIT->SetParName(6,"A");
+	FIT->SetParameter(6,-20);
+	FIT->SetParName(7,"B");
+	FIT->SetParameter(7,0.1);
+	FIT->SetParName(8,"C");
+	FIT->SetParameter(8,-1e-04);
+		
+	h1_mass_s_plus_b_2->Add(h1_mass_signal);
+	h1_mass_s_plus_b_2->Add(h1_mass_back);
+	h1_mass_s_plus_b_2->Fit(FIT, "L");
+	
+	h1_mass_s_plus_b_2->GetXaxis()->SetTitle("m_{4l} [GeV]"); 
+	h1_mass_s_plus_b_2->GetYaxis()->SetTitle("Events / 2 GeV");
+	h1_mass_s_plus_b_2->SetTitle("Sum of gg #rightarrow ZZ and q  #bar{q} #rightarrow ZZ events");
+	gStyle->SetOptFit();
+	
+	TCanvas *canv; //stvaranje platna
+	canv = new TCanvas("canvas for Z2","Profile histogram example",200, 10,700,500);
+	gPad->SetLeftMargin(0.15);
+	h1_mass_s_plus_b_2->Draw("PE1X0");
+	canv->SaveAs("Z2.pdf"); //spremi platno kao...
+	canv->SaveAs("Z2.png");
+	canv->SaveAs("Z2.root");
+	
+	/*brisanje pokazivaca*/
+	//{
+	delete FIT;
+	delete h1_mass_s_plus_b_2;
 	delete canv;
 	//}
 }

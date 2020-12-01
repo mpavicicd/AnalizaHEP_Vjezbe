@@ -1462,17 +1462,19 @@ public :
 		void	PlotHistogram(TString putanja);
 		void	PlotMass();
 		void	PlotDiscriminator();
-		void	HiggsMassWidth();
-		TH1F	*h1;
-		TH1F	*mass_signal_histo;
-		TH1F	*mass_background_histo;
-		TH1F	*disc_signal_histo_10;
-		TH1F	*disc_background_histo_10;
-		TH1F	*disc_signal_histo;
-		TH1F	*disc_background_histo;
-		TH1F	*sum_sig_back;
-		TH2F	*mass_KD_signal_histo;
-		TH2F	*mass_KD_background_histo;
+		void	DefaultFit();
+		void	MaximumLikelihoodFit();
+		TH1F	*h1_event_weights;
+		TH1F	*h1_mass_signal;
+		TH1F	*h1_mass_back;
+		TH1F	*h1_mass_s_plus_b;
+		TH1F	*h1_mass_s_plus_b_2;
+		TH1F	*h1_disc_signal_10;
+		TH1F	*h1_disc_back_10;
+		TH1F	*h1_disc_signal;
+		TH1F	*h1_disc_back;
+		TH2F	*h2_mass_KD_signal;
+		TH2F	*h2_mass_KD_back;
 		int		number_of_bins_for_discriminator;
 };
 
@@ -1483,16 +1485,17 @@ Analyzer::Analyzer(int disc_numofbins) : fChain(0) //konstruktor klase
 {
 	number_of_bins_for_discriminator = disc_numofbins;
 	//konstruktor za TH1F (name of histogram, histogram title, number of bins, low edge of first bin, upper edge of last bin)
-	mass_signal_histo = new TH1F("masa_signal_histogram", "Signal Higgs mass", 50, 70, 170);
-	mass_background_histo = new TH1F("masa_background_histogram", "Background Higgs mass", 50, 70, 170);
-	disc_signal_histo_10 = new TH1F("discriminator_signal_histo_10", "Normalised kinematic discriminator", 10, 0, 1);
-	disc_background_histo_10 = new TH1F("discriminator_background_histo_10", "Normalised kinematic discriminator", 10, 0, 1);
-	disc_signal_histo = new TH1F("discriminator_signal_histo", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
-	disc_background_histo = new TH1F("discriminator_background_histo", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
-	sum_sig_back = new TH1F("Histogram of Higgs Mass", "Sum of background and signal events", 50, 70, 170);
+	h1_mass_signal = new TH1F("Histogram for mass from signal events", "Signal Higgs mass", 50, 70, 170);
+	h1_mass_back = new TH1F("Histogram for mass from background events", "Background Higgs mass", 50, 70, 170);
+	h1_disc_signal_10 = new TH1F("Histogram for discriminator from signal events for 10 bins", "Normalised kinematic discriminator", 10, 0, 1);
+	h1_disc_back_10 = new TH1F("Histogram for discriminator from background events for 10 bins", "Normalised kinematic discriminator", 10, 0, 1);
+	h1_disc_signal = new TH1F("Histogram for discriminator from signal events", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
+	h1_disc_back = new TH1F("istogram for discriminator from background events", "Normalised kinematic discriminator", disc_numofbins, 0, 1);
+	h1_mass_s_plus_b = new TH1F("Default fit method - chi square", "Sum of background and signal events", 50, 70, 170);
+	h1_mass_s_plus_b_2 = new TH1F("Fit with Maximum Likelihood method", "Sum of background and signal events", 50, 70, 170);
 	//konstruktor za TH2F (name of histogram, histogram title, nbinsx, xlow, xup, nbinsy, ylow, yup)
-	mass_KD_signal_histo = new TH2F("histo_signal", "Mass vs KD", 50, 70., 170., 20, 0., 1.0);
-	mass_KD_background_histo = new TH2F("histo_background", "Mass vs KD", 50, 70., 170., 20, 0., 1.0);
+	h2_mass_KD_signal = new TH2F("histo_signal", "Mass vs KD", 50, 70., 170., 20, 0., 1.0);
+	h2_mass_KD_back = new TH2F("histo_background", "Mass vs KD", 50, 70., 170., 20, 0., 1.0);
 }
 
 Analyzer::~Analyzer()

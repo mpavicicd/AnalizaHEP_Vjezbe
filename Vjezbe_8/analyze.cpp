@@ -9,7 +9,8 @@ int main () {
 	pok->PlotHistogram("/home/public/data/qqZZ/ZZ4lAnalysis.root"); //pozadina - SREDIT SKALU
 	//pok->PlotMass();
 	//pok->PlotDiscriminator();
-	pok->HiggsMassWidth();
+	pok->DefaultFit();
+	pok->MaximumLikelihoodFit();
 	delete pok;
 	return 0;
 }
