@@ -52,15 +52,15 @@ double Analyzer::CPLowerLimit(int r, double p, int N){ //auxiliary function for 
 
 void Analyzer::RepeatClopperPearson(int N, double CL){
 //function that repets ClopperPearson for all possibilities of r, prints all intervals and fills histograms for plotting the belt
-	histo_p_plus = new TH1F("histogram_for_upper_limit", "Upper limit", N, 0, N);
-	histo_p_minus = new TH1F("histogram_for_lower_limit", "Lower limit", N, 0, N);
+	histo_p_plus = new TH1F("histogram_for_upper_limit", "Upper limit", N+1, -0.5, N+0.5);
+	histo_p_minus = new TH1F("histogram_for_lower_limit", "Lower limit", N+1, -0.5, N+0.5);
 	cout << endl << "68.27% Clopper Pearson intervals for r successes out of 10 events" << endl;
 	cout << "\tr\tp-\t\tp+" << endl;
 	for(int r_in=0; r_in<= N; r_in++){
 		ClopperPearson(r_in, N, CL); //r, N, C
 		cout << "\t" << r_in << "\t" << p_minus << "\t\t" << p_plus << endl;
-		histo_p_plus -> SetBinContent(r_in, p_plus); //set the content of bin r_in to value p_plus
-		histo_p_minus -> SetBinContent(r_in, p_minus); //set the content of bin r_in to value p_minus
+		histo_p_plus -> SetBinContent(r_in+1, p_plus); //set the content of bin r_in to value p_plus
+		histo_p_minus -> SetBinContent(r_in+1, p_minus); //set the content of bin r_in to value p_minus
 	}
 }
 
@@ -80,14 +80,14 @@ void Analyzer::PlotCPBelt(int r){
 	histo_p_plus->GetXaxis()->SetLabelSize(0.025); //size of numerical labels
 	histo_p_plus->GetYaxis()->SetLabelSize(0.025);
 
-	lines[0] = new TLine(r, 0, r, histo_p_plus->GetBinContent(r));
-	lines[1] = new TLine(0, histo_p_plus->GetBinContent(r), r, histo_p_plus->GetBinContent(r));
-	lines[2] = new TLine(0, histo_p_minus->GetBinContent(r), r, histo_p_minus->GetBinContent(r));
+	lines[0] = new TLine(r, 0, r, histo_p_plus->GetBinContent(r+1));
+	lines[1] = new TLine(-0.5, histo_p_plus->GetBinContent(r+1), r, histo_p_plus->GetBinContent(r+1));
+	lines[2] = new TLine(-0.5, histo_p_minus->GetBinContent(r+1), r, histo_p_minus->GetBinContent(r+1));
 	labels[0] = new TLatex(r-0.1, -0.06, "r_{0}");
-	labels[1] = new TLatex(-1, histo_p_minus->GetBinContent(r)-0.01, "p_{-}(r_{0})");
-	labels[2] = new TLatex(-1, histo_p_plus->GetBinContent(r)-0.01, "p_{+}(r_{0})");
-	rightline = new TLine(histo_p_plus->GetMaximumBin(), 0, histo_p_plus->GetMaximumBin(), histo_p_plus->GetMaximum()); //right part of the frame that is covered by histogram fill
-	upperline = new TLine(0, histo_p_plus->GetMaximum(), histo_p_plus->GetMaximumBin(), histo_p_plus->GetMaximum()); //upper part of the frame that is covered by histogram fill
+	labels[1] = new TLatex(-1.6, histo_p_minus->GetBinContent(r+1)-0.01, "p_{-}(r_{0})");
+	labels[2] = new TLatex(-1.6, histo_p_plus->GetBinContent(r+1)-0.01, "p_{+}(r_{0})");
+	rightline = new TLine(histo_p_plus->GetMaximumBin()-0.5, 0, histo_p_plus->GetMaximumBin()-0.5, histo_p_plus->GetMaximum()); //right part of the frame that is covered by histogram fill
+	upperline = new TLine(0, histo_p_plus->GetMaximum(), histo_p_plus->GetMaximumBin()-0.5, histo_p_plus->GetMaximum()); //upper part of the frame that is covered by histogram fill
 
 
 	for(int i=0; i<3; i++){

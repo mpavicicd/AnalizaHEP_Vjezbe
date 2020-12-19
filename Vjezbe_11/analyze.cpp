@@ -15,7 +15,7 @@ int main () {
 	cout << endl;
 
 	//#####Z3#####
-	pok -> PlotCPBelt(5); //input value is desired r
+	pok -> PlotCPBelt(2); //input value is desired r
 	
 	//#####Z4#####
 	int throws = 10; //number of throws
