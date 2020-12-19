@@ -4,26 +4,27 @@
 
 int main () {
 	srand((int)time(0));
+
 	Analyzer *pok;
-	int i, nexp, dice, count = 0;
-	int yes=0, no=0;
 	pok = new Analyzer();
-	int throws = 10;
-	/*for(int r_in=0; r_in<= 10; r_in++){ //za Z2
-		pok->ClopperPearson(r_in,10,0.68); //r, N, C
-	}*/
-	for(nexp=0; nexp<1000; nexp++){ // za Z4
-		for(i=0; i<throws; i++){
-			dice = rand() % 6 + 1;
-			if(dice == 6)
-				count = count + 1;
-		}
-	/*if(pok->CheckInterval(count, throws, 1./6)) //TU STALA, javlja seg
-		yes = yes + 1;
-	else
-		no = no + 1;*/
-	}
-	cout << "Broj slucajeva u kojim vjerojatnost upada u pojas: " << yes << endl;
+
+	//#####Z2#####
+	int N = 10; //total number of events
+	double CL = 0.6827; //confidence level
+	pok -> RepeatClopperPearson(N, CL); //function that repeats ClopperPearson for all possibilities of r and prints all intervals
+	cout << endl;
+
+	//#####Z3#####
+	pok -> PlotCPBelt(5); //input value is desired r
+	
+	//#####Z4#####
+	int throws = 10; //number of throws
+	int numofexp = 1000; //number of experiments
+	cout << endl << "Experiment with dice throwing - percent of experiments in which interval covers true value" << endl;
+	cout << "\tConfidence level\tpercent" << endl;
+	cout << "\t1sigma\t\t\t" << pok -> DiceExperiment(numofexp, throws, 1) << "%" << endl;
+	cout << "\t2sigma\t\t\t" << pok -> DiceExperiment(numofexp, throws, 2) << "%" << endl;
+
 	delete pok;
 	return 0;
 }
