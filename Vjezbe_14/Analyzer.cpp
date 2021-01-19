@@ -83,7 +83,7 @@ void Analyzer::SecondTask(){
 		mass = 1.0 * nE;
 		s_events = (-1.0)*pow(mass - 190, 2) + 0.5;
 		for(int i=0; i<10000; i++){ //10^4 events
-			r = rand()%100;
+			r = rand()%1;
 			if(r > s_events){ //background events
 				histo_sens->Fill(r3->Exp(zeta_SM));
 			}
@@ -95,7 +95,7 @@ void Analyzer::SecondTask(){
 		chi_square = PDF->GetChisquare(); //current chi-square = T_obs
 		bin_T_obs = histo_chisq->FindBin(chi_square);
 		p_value = histo_chisq->Integral(bin_T_obs, 200); //p-value = integral of PDF for test statistic from T_obs to +infinity
-		cout << "step: " << counter+1 << "\tmass: " << mass << "\tchi-sq: " << chi_square << "\tp-value: " << p_value << endl;
+		//cout << "step: " << counter+1 << "\tmass: " << mass << "\tchi-sq: " << chi_square << "\tp-value: " << p_value << endl;
 		histo_sens->Reset();
 		graph_p_value->SetPoint(counter,mass,p_value);
 		counter++;
@@ -103,6 +103,7 @@ void Analyzer::SecondTask(){
 
 	graph_p_value->GetXaxis()->SetTitle("m_{H} [GeV]");
 	graph_p_value->GetYaxis()->SetTitle("local p-value");
+	graph_p_value->SetMinimum(pow(10,-20));
 	
 	gPad->SetLogy();
 	gPad->SetLeftMargin(0.15);
